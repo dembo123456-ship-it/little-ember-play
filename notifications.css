@@ -1,0 +1,37 @@
+/* Notification surfaces never own the game modal or its scroll position. */
+.fame-moments{z-index:35}
+.fame-moments .notification-craft{position:relative;pointer-events:auto;padding-top:29px;max-height:calc(100dvh - 42px);overflow:auto;overscroll-behavior:contain}
+.notification-close{display:grid;place-items:center;position:absolute;top:10px;right:10px;width:30px;height:30px;padding:0;border:1px solid transparent;border-radius:50%;color:#96875f;background:transparent;line-height:1}
+.notification-close:hover{background:#e9dfbf70;border-color:#dacfaa}
+.notification-close .icon{width:16px;height:16px}
+.notification-close>span{font-size:22px;font-weight:400}
+.notification-craft .moment-kicker{padding:0 22px}
+.moment-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #dfd5b5}
+.moment-disable{flex-shrink:0;color:#786b4d;font-size:11px;text-decoration:underline;text-underline-offset:3px;padding:5px 0}
+.moment-disable:hover{color:#3f5948}
+.moment-controls>span{font-size:9px;color:#a79b7c;text-align:right}
+
+.boss-notifications{position:fixed;top:101px;right:22px;width:min(460px,calc(100vw - 32px));z-index:30;pointer-events:none}
+.boss-notification-line{position:relative;display:flex;align-items:center;gap:8px;min-width:0;height:37px;padding:8px 33px 8px 11px;border:1px solid #d2dbc9;border-radius:9px;background:#f6faeff7;box-shadow:0 4px 16px #253b2914;color:#546b51;pointer-events:auto;animation:notification-line-in .18s ease}
+.boss-notification-icon{display:flex;flex:none;color:#80946b}
+.boss-notification-icon .icon{width:16px;height:16px}
+.boss-notification-text{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:1.4}
+.boss-notification-line .notification-close{top:5px;right:4px;width:26px;height:26px;color:#8d9b82}
+.boss-notification-line .notification-close:hover{background:#e5edda;border-color:#d2ddc4}
+.boss-notification-line .notification-close .icon{width:13px;height:13px}
+
+.festival-notifications{position:fixed;inset:0;display:grid;place-items:center;padding:20px;z-index:35;pointer-events:none}
+.festival-reminder{position:relative;width:408px;max-width:calc(100vw - 36px);max-height:calc(100dvh - 42px);overflow:auto;overscroll-behavior:contain;padding:29px 30px 25px;border:1px solid #d8c69e;border-radius:21px;background:linear-gradient(135deg,#fffaf0,#f1efdf);box-shadow:0 18px 65px #3d3a2540,0 0 0 5px #fff8dd60;text-align:center;pointer-events:auto;animation:fame-in .25s ease}
+.festival-reminder-art{display:grid;place-items:center;width:58px;height:62px;border:1px solid #e0cc99;border-radius:18px;background:#f2e6c7;color:#b18c46;margin:0 auto 15px;box-shadow:inset 0 1px #fffbeb}
+.festival-reminder-art .icon{width:32px;height:32px;stroke-width:1.4}
+.festival-reminder h2{font-family:'Gowun Dodum',sans-serif;font-size:24px;font-weight:400;letter-spacing:-.7px;color:#74623b;line-height:1.4;margin:12px 0}
+.festival-reminder>p{font-size:12px;color:#8b826b;line-height:1.9}
+.festival-reminder-date{padding:9px 8px;border:1px solid #e1d9bd;border-radius:8px;background:#f5efda80;font-size:11px;color:#907a50;margin:17px 0 7px}
+.festival-reminder>small{font-size:9px;color:#aaa087}
+.festival-reminder-actions{display:grid;grid-template-columns:1fr 1.75fr;gap:10px;margin-top:22px}
+.festival-reminder-dismiss{padding:10px;border:1px solid #dbd4bf;border-radius:10px;background:#faf7ed;color:#948972;font-size:12px}
+.festival-reminder-dismiss:hover{background:#eee8d9}
+.festival-reminder-actions .primary-button{margin:0}
+@keyframes notification-line-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.boss-notifications{top:128px;right:12px;width:min(420px,calc(100vw - 24px))}.boss-notification-text{font-size:10px}.festival-reminder{padding:27px 22px 22px}.festival-reminder h2{font-size:22px}.moment-controls{gap:8px}.moment-controls>span{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.boss-notification-line,.festival-reminder,.notification-craft{animation:none}}

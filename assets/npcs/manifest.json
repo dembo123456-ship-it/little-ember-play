@@ -1,0 +1,1393 @@
+{
+  "version": 2,
+  "title": "모험가 작업실",
+  "batch": "10직업 · A/B 외형 20종",
+  "stage": "base-forms",
+  "baseFormCount": 20,
+  "plannedPaletteVariantsPerBase": 10,
+  "plannedFinalVariantCount": 200,
+  "frameSize": [
+    512,
+    512
+  ],
+  "sheetSize": [
+    1536,
+    1024
+  ],
+  "grid": {
+    "columns": 3,
+    "rows": 2,
+    "emptyCell": [
+      2,
+      1
+    ]
+  },
+  "poseOrder": [
+    "front_idle",
+    "front_diag_idle",
+    "front_diag_walk",
+    "back_diag_idle",
+    "back_diag_walk"
+  ],
+  "pivot": {
+    "x": 256,
+    "y": 409.6,
+    "normalized": [
+      0.5,
+      0.8
+    ],
+    "origin": "top-left"
+  },
+  "animation": {
+    "fps": 4,
+    "minFps": 1,
+    "maxFps": 12,
+    "front": [
+      "front_idle"
+    ],
+    "front_diag": [
+      "front_diag_idle",
+      "front_diag_walk"
+    ],
+    "back_diag": [
+      "back_diag_idle",
+      "back_diag_walk"
+    ]
+  },
+  "capacity": 200,
+  "jobs": [
+    {
+      "id": "swordsman",
+      "name": "검사",
+      "englishName": "SWORDSMAN"
+    },
+    {
+      "id": "knight",
+      "name": "기사",
+      "englishName": "KNIGHT"
+    },
+    {
+      "id": "warrior",
+      "name": "전사",
+      "englishName": "WARRIOR"
+    },
+    {
+      "id": "spearman",
+      "name": "창병",
+      "englishName": "SPEARMAN"
+    },
+    {
+      "id": "archer",
+      "name": "궁수",
+      "englishName": "ARCHER"
+    },
+    {
+      "id": "crossbow",
+      "name": "석궁 사수",
+      "englishName": "CROSSBOW"
+    },
+    {
+      "id": "mage",
+      "name": "마법사",
+      "englishName": "MAGE"
+    },
+    {
+      "id": "cleric",
+      "name": "성직자",
+      "englishName": "CLERIC"
+    },
+    {
+      "id": "rogue",
+      "name": "도적",
+      "englishName": "ROGUE"
+    },
+    {
+      "id": "fighter",
+      "name": "격투가",
+      "englishName": "FIGHTER"
+    }
+  ],
+  "characters": [
+    {
+      "id": "npc_001",
+      "name": "로언",
+      "jobId": "swordsman",
+      "job": "검사",
+      "jobEnglish": "SWORDSMAN",
+      "type": "A",
+      "baseId": "swordsman_a",
+      "description": "갈색 삐죽머리 · 붉은 스카프 · 가죽 경갑 · 한손검",
+      "accent": "#bc6147",
+      "skinTone": "밝은 살구",
+      "reusedOriginal": true,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_001/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_001/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_001/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_001/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_001/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_001/sheet.png",
+      "bounds": {
+        "front_idle": [
+          144,
+          105,
+          355,
+          408
+        ],
+        "front_diag_idle": [
+          135,
+          111,
+          337,
+          408
+        ],
+        "front_diag_walk": [
+          130,
+          112,
+          338,
+          407
+        ],
+        "back_diag_idle": [
+          159,
+          110,
+          367,
+          408
+        ],
+        "back_diag_walk": [
+          154,
+          110,
+          362,
+          408
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_005",
+      "name": "세린",
+      "jobId": "swordsman",
+      "job": "검사",
+      "jobEnglish": "SWORDSMAN",
+      "type": "B",
+      "baseId": "swordsman_b",
+      "description": "짙은 청색 포니테일 · 짧은 붉은 망토 · 청록 경갑 · 검",
+      "accent": "#3f7f89",
+      "skinTone": "따뜻한 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_005/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_005/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_005/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_005/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_005/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_005/sheet.png",
+      "bounds": {
+        "front_idle": [
+          144,
+          105,
+          338,
+          407
+        ],
+        "front_diag_idle": [
+          112,
+          105,
+          329,
+          406
+        ],
+        "front_diag_walk": [
+          112,
+          104,
+          328,
+          408
+        ],
+        "back_diag_idle": [
+          145,
+          109,
+          366,
+          406
+        ],
+        "back_diag_walk": [
+          146,
+          108,
+          370,
+          406
+        ]
+      },
+      "maxContentHeight": 304,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_009",
+      "name": "레온",
+      "jobId": "knight",
+      "job": "기사",
+      "jobEnglish": "KNIGHT",
+      "type": "A",
+      "baseId": "knight_a",
+      "description": "금발 가르마 · 은빛 판금 갑옷 · 파란 타바드 · 검과 방패",
+      "accent": "#6f8da1",
+      "skinTone": "중간 베이지",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_009/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_009/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_009/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_009/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_009/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_009/sheet.png",
+      "bounds": {
+        "front_idle": [
+          145,
+          104,
+          351,
+          408
+        ],
+        "front_diag_idle": [
+          134,
+          106,
+          332,
+          407
+        ],
+        "front_diag_walk": [
+          135,
+          104,
+          330,
+          408
+        ],
+        "back_diag_idle": [
+          155,
+          108,
+          368,
+          408
+        ],
+        "back_diag_walk": [
+          154,
+          108,
+          368,
+          408
+        ]
+      },
+      "maxContentHeight": 304,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_010",
+      "name": "엘라",
+      "jobId": "knight",
+      "job": "기사",
+      "jobEnglish": "KNIGHT",
+      "type": "B",
+      "baseId": "knight_b",
+      "description": "연보라 웨이브 · 긴 남색 망토 · 금속 갑옷 · 넓은 검",
+      "accent": "#84729a",
+      "skinTone": "따뜻한 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_010/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_010/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_010/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_010/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_010/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_010/sheet.png",
+      "bounds": {
+        "front_idle": [
+          130,
+          106,
+          357,
+          406
+        ],
+        "front_diag_idle": [
+          136,
+          105,
+          340,
+          404
+        ],
+        "front_diag_walk": [
+          128,
+          108,
+          338,
+          409
+        ],
+        "back_diag_idle": [
+          155,
+          108,
+          378,
+          403
+        ],
+        "back_diag_walk": [
+          165,
+          107,
+          381,
+          408
+        ]
+      },
+      "maxContentHeight": 301,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_011",
+      "name": "브란",
+      "jobId": "warrior",
+      "job": "전사",
+      "jobEnglish": "WARRIOR",
+      "type": "A",
+      "baseId": "warrior_a",
+      "description": "짧은 머리와 작은 수염 · 두꺼운 가죽 장비 · 도끼",
+      "accent": "#876744",
+      "skinTone": "짙은 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_011/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_011/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_011/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_011/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_011/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_011/sheet.png",
+      "bounds": {
+        "front_idle": [
+          130,
+          107,
+          347,
+          409
+        ],
+        "front_diag_idle": [
+          126,
+          109,
+          325,
+          408
+        ],
+        "front_diag_walk": [
+          118,
+          110,
+          324,
+          407
+        ],
+        "back_diag_idle": [
+          161,
+          106,
+          373,
+          406
+        ],
+        "back_diag_walk": [
+          165,
+          108,
+          377,
+          406
+        ]
+      },
+      "maxContentHeight": 302,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_012",
+      "name": "프레야",
+      "jobId": "warrior",
+      "job": "전사",
+      "jobEnglish": "WARRIOR",
+      "type": "B",
+      "baseId": "warrior_b",
+      "description": "은금색 양 갈래 머리 · 털 어깨 장식 · 전투 망치",
+      "accent": "#ab7860",
+      "skinTone": "밝은 살구",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_012/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_012/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_012/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_012/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_012/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_012/sheet.png",
+      "bounds": {
+        "front_idle": [
+          131,
+          105,
+          350,
+          406
+        ],
+        "front_diag_idle": [
+          125,
+          106,
+          335,
+          405
+        ],
+        "front_diag_walk": [
+          120,
+          112,
+          331,
+          409
+        ],
+        "back_diag_idle": [
+          158,
+          112,
+          371,
+          407
+        ],
+        "back_diag_walk": [
+          156,
+          113,
+          367,
+          407
+        ]
+      },
+      "maxContentHeight": 301,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_013",
+      "name": "진",
+      "jobId": "spearman",
+      "job": "창병",
+      "jobEnglish": "SPEARMAN",
+      "type": "A",
+      "baseId": "spearman_a",
+      "description": "갈색 상투 · 붉은 스카프 · 가벼운 갑옷 · 창",
+      "accent": "#b5704e",
+      "skinTone": "따뜻한 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_013/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_013/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_013/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_013/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_013/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_013/sheet.png",
+      "bounds": {
+        "front_idle": [
+          146,
+          104,
+          343,
+          403
+        ],
+        "front_diag_idle": [
+          122,
+          106,
+          326,
+          402
+        ],
+        "front_diag_walk": [
+          124,
+          106,
+          323,
+          407
+        ],
+        "back_diag_idle": [
+          165,
+          109,
+          369,
+          401
+        ],
+        "back_diag_walk": [
+          165,
+          105,
+          370,
+          408
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_014",
+      "name": "린",
+      "jobId": "spearman",
+      "job": "창병",
+      "jobEnglish": "SPEARMAN",
+      "type": "B",
+      "baseId": "spearman_b",
+      "description": "은색 단발 · 청록 어깨 갑옷 · 짧은 케이프 · 창",
+      "accent": "#528e8b",
+      "skinTone": "중간 베이지",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_014/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_014/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_014/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_014/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_014/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_014/sheet.png",
+      "bounds": {
+        "front_idle": [
+          146,
+          104,
+          358,
+          404
+        ],
+        "front_diag_idle": [
+          132,
+          104,
+          332,
+          404
+        ],
+        "front_diag_walk": [
+          133,
+          105,
+          338,
+          408
+        ],
+        "back_diag_idle": [
+          155,
+          108,
+          364,
+          405
+        ],
+        "back_diag_walk": [
+          155,
+          106,
+          362,
+          408
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_003",
+      "name": "실바",
+      "jobId": "archer",
+      "job": "궁수",
+      "jobEnglish": "ARCHER",
+      "type": "A",
+      "baseId": "archer_a",
+      "description": "민트색 땋은 머리 · 베레모 · 초록 경장 · 활",
+      "accent": "#5c8870",
+      "skinTone": "밝은 살구",
+      "reusedOriginal": true,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_003/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_003/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_003/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_003/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_003/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_003/sheet.png",
+      "bounds": {
+        "front_idle": [
+          153,
+          105,
+          358,
+          408
+        ],
+        "front_diag_idle": [
+          136,
+          108,
+          338,
+          408
+        ],
+        "front_diag_walk": [
+          136,
+          110,
+          335,
+          408
+        ],
+        "back_diag_idle": [
+          155,
+          104,
+          359,
+          407
+        ],
+        "back_diag_walk": [
+          157,
+          108,
+          362,
+          407
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_007",
+      "name": "아이린",
+      "jobId": "archer",
+      "job": "궁수",
+      "jobEnglish": "ARCHER",
+      "type": "B",
+      "baseId": "archer_b",
+      "description": "적갈색 포니테일 · 열린 후드 · 초록 튜닉 · 활",
+      "accent": "#657a47",
+      "skinTone": "중간 베이지",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_007/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_007/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_007/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_007/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_007/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_007/sheet.png",
+      "bounds": {
+        "front_idle": [
+          163,
+          105,
+          344,
+          408
+        ],
+        "front_diag_idle": [
+          125,
+          109,
+          325,
+          408
+        ],
+        "front_diag_walk": [
+          120,
+          110,
+          326,
+          407
+        ],
+        "back_diag_idle": [
+          156,
+          107,
+          347,
+          407
+        ],
+        "back_diag_walk": [
+          153,
+          104,
+          350,
+          407
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_015",
+      "name": "가렌",
+      "jobId": "crossbow",
+      "job": "석궁 사수",
+      "jobEnglish": "CROSSBOW",
+      "type": "A",
+      "baseId": "crossbow_a",
+      "description": "짧은 적갈색 곱슬머리 · 올리브색 조끼 · 석궁",
+      "accent": "#718351",
+      "skinTone": "짙은 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_015/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_015/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_015/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_015/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_015/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_015/sheet.png",
+      "bounds": {
+        "front_idle": [
+          152,
+          107,
+          360,
+          408
+        ],
+        "front_diag_idle": [
+          140,
+          110,
+          339,
+          408
+        ],
+        "front_diag_walk": [
+          142,
+          115,
+          339,
+          407
+        ],
+        "back_diag_idle": [
+          162,
+          106,
+          355,
+          404
+        ],
+        "back_diag_walk": [
+          161,
+          106,
+          357,
+          409
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_016",
+      "name": "미라",
+      "jobId": "crossbow",
+      "job": "석궁 사수",
+      "jobEnglish": "CROSSBOW",
+      "type": "B",
+      "baseId": "crossbow_b",
+      "description": "애쉬 금발 · 고글 · 카라멜색 짧은 코트 · 석궁",
+      "accent": "#a67c4e",
+      "skinTone": "따뜻한 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_016/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_016/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_016/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_016/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_016/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_016/sheet.png",
+      "bounds": {
+        "front_idle": [
+          154,
+          107,
+          348,
+          407
+        ],
+        "front_diag_idle": [
+          141,
+          103,
+          348,
+          403
+        ],
+        "front_diag_walk": [
+          141,
+          104,
+          348,
+          407
+        ],
+        "back_diag_idle": [
+          155,
+          116,
+          352,
+          404
+        ],
+        "back_diag_walk": [
+          158,
+          115,
+          352,
+          407
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_002",
+      "name": "루미",
+      "jobId": "mage",
+      "job": "마법사",
+      "jobEnglish": "MAGE",
+      "type": "A",
+      "baseId": "mage_a",
+      "description": "분홍 양 갈래 머리 · 보라색 모자 · 짧은 로브 · 지팡이",
+      "accent": "#8964a2",
+      "skinTone": "밝은 살구",
+      "reusedOriginal": true,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_002/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_002/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_002/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_002/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_002/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_002/sheet.png",
+      "bounds": {
+        "front_idle": [
+          132,
+          108,
+          369,
+          408
+        ],
+        "front_diag_idle": [
+          114,
+          106,
+          343,
+          407
+        ],
+        "front_diag_walk": [
+          121,
+          104,
+          343,
+          408
+        ],
+        "back_diag_idle": [
+          147,
+          113,
+          360,
+          408
+        ],
+        "back_diag_walk": [
+          147,
+          114,
+          360,
+          408
+        ]
+      },
+      "maxContentHeight": 304,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_006",
+      "name": "테오",
+      "jobId": "mage",
+      "job": "마법사",
+      "jobEnglish": "MAGE",
+      "type": "B",
+      "baseId": "mage_b",
+      "description": "푸른 단발 · 뒤로 넘긴 후드 · 크림색 로브 · 마법책",
+      "accent": "#4c8e99",
+      "skinTone": "짙은 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_006/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_006/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_006/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_006/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_006/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_006/sheet.png",
+      "bounds": {
+        "front_idle": [
+          150,
+          110,
+          357,
+          407
+        ],
+        "front_diag_idle": [
+          131,
+          109,
+          336,
+          405
+        ],
+        "front_diag_walk": [
+          123,
+          108,
+          330,
+          408
+        ],
+        "back_diag_idle": [
+          154,
+          103,
+          362,
+          405
+        ],
+        "back_diag_walk": [
+          158,
+          105,
+          362,
+          408
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_017",
+      "name": "에밀",
+      "jobId": "cleric",
+      "job": "성직자",
+      "jobEnglish": "CLERIC",
+      "type": "A",
+      "baseId": "cleric_a",
+      "description": "둥근 분홍 단발 · 크림색과 파란 성직복 · 해 문양 지팡이",
+      "accent": "#7c97aa",
+      "skinTone": "중간 베이지",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_017/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_017/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_017/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_017/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_017/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_017/sheet.png",
+      "bounds": {
+        "front_idle": [
+          144,
+          105,
+          354,
+          405
+        ],
+        "front_diag_idle": [
+          140,
+          106,
+          336,
+          406
+        ],
+        "front_diag_walk": [
+          139,
+          106,
+          337,
+          406
+        ],
+        "back_diag_idle": [
+          153,
+          104,
+          368,
+          406
+        ],
+        "back_diag_walk": [
+          156,
+          105,
+          371,
+          404
+        ]
+      },
+      "maxContentHeight": 302,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_018",
+      "name": "셀레네",
+      "jobId": "cleric",
+      "job": "성직자",
+      "jobEnglish": "CLERIC",
+      "type": "B",
+      "baseId": "cleric_b",
+      "description": "긴 백색 웨이브 · 어깨 덮개 · 자주색 성직복 · 기도서",
+      "accent": "#9f6076",
+      "skinTone": "짙은 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_018/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_018/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_018/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_018/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_018/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_018/sheet.png",
+      "bounds": {
+        "front_idle": [
+          141,
+          113,
+          360,
+          406
+        ],
+        "front_diag_idle": [
+          122,
+          104,
+          334,
+          397
+        ],
+        "front_diag_walk": [
+          120,
+          105,
+          332,
+          406
+        ],
+        "back_diag_idle": [
+          141,
+          113,
+          345,
+          403
+        ],
+        "back_diag_walk": [
+          139,
+          113,
+          345,
+          406
+        ]
+      },
+      "maxContentHeight": 301,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_004",
+      "name": "노아",
+      "jobId": "rogue",
+      "job": "도적",
+      "jobEnglish": "ROGUE",
+      "type": "A",
+      "baseId": "rogue_a",
+      "description": "은발 · 짧은 남색 망토 · 쌍단검",
+      "accent": "#657c9a",
+      "skinTone": "밝은 살구",
+      "reusedOriginal": true,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_004/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_004/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_004/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_004/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_004/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_004/sheet.png",
+      "bounds": {
+        "front_idle": [
+          151,
+          104,
+          354,
+          408
+        ],
+        "front_diag_idle": [
+          136,
+          106,
+          338,
+          407
+        ],
+        "front_diag_walk": [
+          131,
+          105,
+          333,
+          408
+        ],
+        "back_diag_idle": [
+          157,
+          106,
+          358,
+          407
+        ],
+        "back_diag_walk": [
+          151,
+          107,
+          355,
+          408
+        ]
+      },
+      "maxContentHeight": 304,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_008",
+      "name": "카이",
+      "jobId": "rogue",
+      "job": "도적",
+      "jobEnglish": "ROGUE",
+      "type": "B",
+      "baseId": "rogue_b",
+      "description": "검은 올림머리 · 붉은 두건 · 짧은 가죽 재킷 · 단검",
+      "accent": "#a04d49",
+      "skinTone": "짙은 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_008/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_008/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_008/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_008/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_008/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_008/sheet.png",
+      "bounds": {
+        "front_idle": [
+          151,
+          110,
+          344,
+          407
+        ],
+        "front_diag_idle": [
+          139,
+          103,
+          329,
+          404
+        ],
+        "front_diag_walk": [
+          138,
+          106,
+          327,
+          408
+        ],
+        "back_diag_idle": [
+          168,
+          109,
+          359,
+          407
+        ],
+        "back_diag_walk": [
+          163,
+          111,
+          354,
+          407
+        ]
+      },
+      "maxContentHeight": 302,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_019",
+      "name": "건",
+      "jobId": "fighter",
+      "job": "격투가",
+      "jobEnglish": "FIGHTER",
+      "type": "A",
+      "baseId": "fighter_a",
+      "description": "검은 삐죽머리 · 노란 머리띠 · 흰 도복 · 손 붕대",
+      "accent": "#b99a49",
+      "skinTone": "중간 베이지",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_019/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_019/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_019/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_019/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_019/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_019/sheet.png",
+      "bounds": {
+        "front_idle": [
+          157,
+          105,
+          356,
+          406
+        ],
+        "front_diag_idle": [
+          139,
+          105,
+          335,
+          405
+        ],
+        "front_diag_walk": [
+          135,
+          106,
+          333,
+          405
+        ],
+        "back_diag_idle": [
+          160,
+          103,
+          349,
+          404
+        ],
+        "back_diag_walk": [
+          163,
+          103,
+          356,
+          406
+        ]
+      },
+      "maxContentHeight": 303,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    },
+    {
+      "id": "npc_020",
+      "name": "유나",
+      "jobId": "fighter",
+      "job": "격투가",
+      "jobEnglish": "FIGHTER",
+      "type": "B",
+      "baseId": "fighter_b",
+      "description": "짙은 민트 올림머리 · 짧은 남색 재킷 · 금속 건틀릿",
+      "accent": "#4c858b",
+      "skinTone": "따뜻한 갈색",
+      "reusedOriginal": false,
+      "colorVariants": 1,
+      "colorMaskStatus": "planned",
+      "frames": {
+        "front_idle": "assets/npcs/npc_020/front_idle.png",
+        "front_diag_idle": "assets/npcs/npc_020/front_diag_idle.png",
+        "front_diag_walk": "assets/npcs/npc_020/front_diag_walk.png",
+        "back_diag_idle": "assets/npcs/npc_020/back_diag_idle.png",
+        "back_diag_walk": "assets/npcs/npc_020/back_diag_walk.png"
+      },
+      "sheet": "assets/npcs/npc_020/sheet.png",
+      "bounds": {
+        "front_idle": [
+          167,
+          103,
+          341,
+          404
+        ],
+        "front_diag_idle": [
+          168,
+          108,
+          332,
+          405
+        ],
+        "front_diag_walk": [
+          170,
+          108,
+          332,
+          404
+        ],
+        "back_diag_idle": [
+          174,
+          117,
+          338,
+          406
+        ],
+        "back_diag_walk": [
+          176,
+          116,
+          343,
+          406
+        ]
+      },
+      "maxContentHeight": 301,
+      "pivot": {
+        "x": 256,
+        "y": 409.6,
+        "normalized": [
+          0.5,
+          0.8
+        ]
+      }
+    }
+  ],
+  "sourceArchiveSha256": "2011cb0c7830194203147d4e5c42a27a4ae3badc511fe72d49a6f6c9374d9bd6"
+}

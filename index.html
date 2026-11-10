@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#294b41">
+  <meta name="description" content="작은 대장간에서 시작되는 커다란 모험. 장비를 만들고, 모험가에게 재료를 의뢰하며 함께 성장하는 2D 경영 시뮬레이션.">
+  <title>작은 불꽃 대장간 · Little Ember</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=20261110-a43">
+  <link rel="stylesheet" href="notifications.css?v=20261110-a43">
+  <script defer src="npc-roster.js?v=20261110-a43"></script>
+  <script defer src="progression.js?v=20261110-a43"></script>
+  <script defer src="raids.js?v=20261110-a43"></script>
+  <script defer src="world-data.js?v=20261110-a43"></script>
+  <script defer src="equipment-data.js?v=20261110-a43"></script>
+  <script defer src="campaign.js?v=20261110-a43"></script>
+  <script defer src="shop-layout.js?v=20261110-a43"></script>
+  <script defer src="warehouse.js?v=20261110-a43"></script>
+  <script defer src="operations.js?v=20261110-a43"></script>
+  <script defer src="customer-service.js?v=20261110-a43"></script>
+  <script defer src="personality.js?v=20261110-a43"></script>
+  <script defer src="recruitment.js?v=20261110-a43"></script>
+  <script defer src="seasons.js?v=20261110-a43"></script>
+  <script defer src="research.js?v=20261110-a43"></script>
+  <script defer src="incidents.js?v=20261110-a43"></script>
+  <script defer src="quests.js?v=20261110-a43"></script>
+  <script defer src="achievements.js?v=20261110-a43"></script>
+  <script defer src="engine.js?v=20261110-a43"></script>
+  <script defer src="npc-pack.js?v=20261110-a43"></script>
+  <script defer src="art-pack.js?v=20261110-a43"></script>
+  <script defer src="item-icons.js?v=20261110-a43"></script>
+  <script defer src="world-routes.js?v=20261110-a43"></script>
+  <script defer src="scene.js?v=20261110-a43"></script>
+  <script defer src="notifications.js?v=20261110-a43"></script>
+  <script defer src="save-store.js?v=20261110-a43"></script>
+  <script defer src="audio.js?v=20261110-a43"></script>
+  <script defer src="app.js?v=20261110-a43"></script>
+</head>
+<body>
+
+
+  <div class="app-shell">
+
+
+    <main class="main-area">
+      <section class="page-heading">
+        <div><p class="eyebrow" id="location-eyebrow">GREENWOOD VILLAGE</p><h1 id="location-heading">오늘도, 따뜻한 불을 피워요.</h1><p class="heading-sub" id="location-sub">당신이 만든 장비에서 새로운 모험이 시작됩니다.</p></div>
+        <button class="day-stamp" data-action="nav" data-tab="calendar" title="달력·축제·급여 보기"><span data-icon="calendar"></span><div><strong id="day-value">1년 봄 1일</strong><small id="clock-value">오전 8:00 · 달력 보기</small></div></button>
+      </section>
+
+      <div class="save-toolbar"><button class="save-indicator" id="save-indicator" data-action="settings" data-state="saved" title="저장 상태 및 백업 보기">5초마다 자동 저장</button></div>
+
+      <div class="game-layout">
+        <div class="scene-column">
+          <section class="scene-card" aria-label="대장간 게임 화면">
+
+            <div class="canvas-wrap view-village" id="canvas-wrap"><canvas id="game-canvas" width="1280" height="720" tabindex="0" aria-label="모험가가 방문하는 2D 대장간. 시설이나 모험가를 클릭해 자세히 볼 수 있습니다."></canvas><div class="scene-label"><span class="tiny-flame" data-icon="flame"></span><span>작은 불꽃 <b id="shop-level">Lv. 1</b></span></div><div class="scene-weather"><span data-icon="sun"></span> 햇살 좋은 날</div><div class="scene-help" id="scene-help"><span data-icon="mouse"></span> 시설·모험가 선택 · 드래그로 이동</div><button class="room-switch" id="room-switch" type="button" data-action="room-switch" hidden></button><button class="room-switch village-exit" id="village-exit" data-action="view" data-view="village" hidden><span class="room-arrow down" data-icon="arrow"></span> 마을로 나가기 <span class="room-arrow down" data-icon="arrow"></span></button><div class="game-feed" id="game-feed" aria-live="polite"></div><div class="calendar-stack"><div class="calendar-row"><button type="button" class="calendar-chip" id="calendar-chip" data-action="season-open" data-id="season" aria-label="달력과 계절 행사"></button><div class="effect-icons" id="effect-icons" aria-label="지금 걸린 효과"></div></div><div class="incident-list" id="incident-list" aria-label="돌발 사건"></div><div class="quest-tracker" id="quest-tracker" aria-label="성장 퀘스트" hidden></div></div><div class="camera-controls" aria-label="화면 이동 및 확대"><button data-action="camera" data-camera="reset" aria-label="화면 가운데로" title="화면 가운데로"><span data-icon="focus"></span></button><button data-action="camera" data-camera="in" aria-label="화면 확대" title="확대 (보이는 범위 줄이기)">+</button><button class="view-scale" id="view-scale" data-action="camera" data-camera="scale-reset" aria-label="화면 배율, 누르면 100%" title="화면 배율 · 누르면 100%">100%</button><button data-action="camera" data-camera="out" aria-label="화면 축소" title="축소 (보이는 범위 넓히기)">−</button></div><div class="placement-banner" id="placement-banner" hidden><div><strong id="placement-title">시설 놓을 곳을 골라주세요</strong><small id="placement-description">빈 바닥을 누르면 배치합니다.</small></div><button data-action="cancel-placement">취소 <kbd>Esc</kbd></button></div><div class="pause-overlay" id="pause-overlay" hidden><span data-icon="pause"></span><strong>잠시 쉬어가는 중</strong><button data-action="pause">계속하기</button></div>    <nav class="main-nav" aria-label="게임 메뉴">
+      <div class="nav-top">
+        <button class="nav-item active" data-action="nav" data-tab="shop" aria-current="page" aria-label="대장간" title="대장간"><span class="menu-icon" aria-hidden="true"></span><span>대장간</span></button>
+        <button class="nav-item" data-action="nav" data-tab="characters" aria-label="캐릭터 (모험가·직원)" title="캐릭터 (모험가·직원)"><span class="menu-icon" aria-hidden="true"></span><span>캐릭터</span><i id="hero-count">6</i></button>
+        <button class="nav-item" data-action="nav" data-tab="quests" aria-label="의뢰" title="의뢰"><span class="menu-icon" aria-hidden="true"></span><span>의뢰</span><i class="quest-dot" id="quest-count" hidden>0</i></button>
+        <button class="nav-item" data-action="nav" data-tab="facilities" aria-label="시설 배치 (대장간·여관)" title="시설 배치 (대장간·여관)"><span class="menu-icon" aria-hidden="true"></span><span>시설 배치</span></button>
+        <button class="nav-item" data-action="nav" data-tab="operations" aria-label="자동 운영" title="자동 운영"><span class="menu-icon" aria-hidden="true"></span><span>자동 운영</span></button>
+        <button class="nav-item" data-action="nav" data-tab="world" aria-label="월드맵" title="월드맵"><span class="menu-icon" aria-hidden="true"></span><span>월드맵</span></button>
+        <button class="nav-item nav-research" data-action="nav" data-tab="research" aria-label="연구" title="연구"><span class="menu-icon" aria-hidden="true"></span><span>연구</span></button>
+        <button class="nav-item nav-achievements" data-action="nav" data-tab="achievements" aria-label="업적" title="업적"><span class="menu-icon" aria-hidden="true"></span><span>업적</span></button>
+        <button class="nav-item nav-settings" data-action="settings" aria-label="환경설정" title="환경설정"><span class="menu-icon" aria-hidden="true"></span><span>환경설정</span></button>
+      </div>
+      
+    </nav><div id="world-keyboard-regions" class="world-keyboard-regions" aria-label="월드맵 사냥터" hidden></div><div class="village-view" id="village-view" aria-label="마을 화면"><div class="village-sky"></div><div class="village-ground"></div><canvas class="village-actors" id="village-actors" width="1280" height="720" aria-hidden="true"></canvas><button class="village-building village-forge" data-action="enter-workshop" aria-label="대장간 입장"><span class="village-art" id="village-forge-art"></span><span class="village-caption" id="village-forge-label">대장간 · 입장</span></button><div class="village-building village-inn" aria-label="여관"><span class="village-art" id="village-inn-art"></span><span class="village-caption" id="village-inn-label">여관</span></div></div>  <header class="topbar">
+    <a class="brand" href="#" aria-label="작은 불꽃 대장간 홈">
+      <span class="brand-mark" id="brand-icon"></span>
+      <span><strong>작은 불꽃 대장간<span class="brand-dot">.</span></strong><small>LITTLE EMBER · A BLACKSMITH STORY</small></span>
+    </a>
+    <div class="time-controls"><button class="pause-button" data-action="pause" title="일시정지 · Space" aria-label="일시정지"><span data-icon="pause"></span></button><button class="active speed-toggle" data-action="speed-toggle" aria-label="게임 속도 전환">1×</button></div>
+    <div class="header-resources">
+      <button class="resource-pill gold-pill resource-button" data-action="finance" title="골드 사용처와 급여 보기"><span data-icon="coin"></span><div><small>보유 골드</small><b id="gold-value">1,200 <em>G</em></b></div></button>
+      <button class="resource-pill reputation-pill resource-button" data-action="fame" title="명성과 영입 제안 보기"><span data-icon="star"></span><div><small>대장간 명성</small><b id="reputation-value">0</b></div></button>
+      <button class="icon-button" title="업적과 칭호" aria-label="업적과 칭호" data-action="achievements"><span data-icon="trophy"></span></button>
+      <button class="icon-button" id="sound-toggle" title="효과음 켜기" aria-label="효과음 켜기" data-action="sound"></button>
+    </div>
+  </header>            <div class="scene-toolbar"><div class="scene-title"><span data-icon="shop"></span><strong id="scene-title">나의 대장간</strong><span class="open-tag" id="open-tag"><i></i> 영업 중</span></div><button class="sr-only" data-action="view" data-view="village">마을로 나가기</button></div>            <div class="scene-bottom"><div class="visitor-caption"><span class="status-dot"></span><span id="scene-summary">모험가들을 기다리고 있어요</span></div></div>      <section class="save-recovery-banner" id="save-recovery-banner" role="alert" hidden><div><strong id="save-recovery-title">저장된 진행을 보호하고 있어요</strong><p id="save-recovery-message"></p></div><div class="setting-actions"><button class="secondary-button" id="save-retry" data-action="retry-save-load">다시 불러오기</button><button class="secondary-button" data-action="settings">저장 및 복구 설정</button></div></section>        <aside class="work-panel" aria-label="대장간 운영 패널" hidden>
+          <div class="work-heading"><div><h2 id="panel-title">작은 장인의 작업대</h2></div><button class="icon-button work-close" data-action="close-work" aria-label="제작 패널 닫기"><span data-icon="close"></span></button></div>
+          <div class="work-tabs" role="tablist" aria-label="운영 메뉴"><button class="active" role="tab" aria-selected="true" data-action="side" data-side="craft">장비 제작</button><button role="tab" aria-selected="false" data-action="side" data-side="inventory">장비 보관 <span id="stock-count">0</span></button><button role="tab" aria-selected="false" data-action="side" data-side="materials">재료 창고</button></div>
+          <div id="side-content" class="side-content"></div>
+          <div id="queue-section" class="queue-section"></div>
+          <div class="master-note"><canvas class="portrait master-portrait" width="72" height="88" data-staff-portrait="shop-owner" aria-hidden="true"></canvas><div><b>좋은 장비가, 좋은 모험을.</b><p>모험가가 강해지면 더 귀한 재료를 가져올 거예요.</p></div></div>
+        </aside>  <div class="toast-stack" id="toasts" aria-live="polite" aria-atomic="false"></div>  <div class="fame-moments" id="fame-moments" role="status" aria-live="polite" aria-atomic="true" hidden></div>  <div class="boss-notifications" id="boss-notifications" role="status" aria-live="polite" aria-atomic="true" hidden></div>  <div class="festival-notifications" id="festival-notifications" aria-live="polite" hidden></div>  <div class="modal-backdrop" id="modal-backdrop" hidden><section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-header"><div><p class="eyebrow" id="modal-eyebrow"></p><h2 id="modal-title"></h2></div><span class="modal-header-extra" id="modal-header-extra"></span><button class="icon-button" data-action="close" aria-label="닫기"><span data-icon="close"></span></button></div><div class="modal-alert" id="modal-alert" role="alert" hidden></div><div class="modal-tabs modal-switch" id="modal-switch" hidden></div><div class="modal-body" id="modal-body"></div></section></div></div>
+
+          </section>
+          <div class="branch-shortcuts" id="branch-shortcuts" aria-label="지점 바로가기"></div>
+          <div class="campaign-summary" id="campaign-summary" aria-label="명성과 마을 소식"></div>
+          <div class="town-overview" id="town-overview" aria-label="현재 마을 운영 현황"></div>
+          <section class="goal-card" id="goal-card"></section>
+          <details class="early-guide" id="early-guide"><summary><span data-icon="book"></span><span>처음 두 시간, 대장간 운영의 길잡이</span><small>목표 경로</small></summary><div id="early-guide-content"></div></details>
+          <section class="journal-card"><div class="section-heading"><h2><span data-icon="book"></span> 대장간의 하루</h2><span class="subtle">최근 소식</span></div><div id="activity-log" class="activity-log"></div></section>
+        </div>
+
+
+      </div>
+      <footer class="page-footer"><span><i class="save-dot"></i><span id="save-status">자동 저장 준비 중</span></span><span>작은 불꽃에서 시작되는 커다란 이야기</span><button data-action="help">플레이 방법 <span data-icon="arrow"></span></button></footer>
+    </main>
+  </div>
+
+
+
+
+
+
+  <input id="import-input" type="file" accept="application/json,.json" hidden>
+  <noscript><p class="noscript">이 게임을 플레이하려면 브라우저의 JavaScript를 켜 주세요.</p></noscript>
+</body>
+</html>
