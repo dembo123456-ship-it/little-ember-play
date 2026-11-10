@@ -1350,3 +1350,10 @@ html,body{overflow-x:hidden}
 .hd-status svg{width:12px;height:12px}
 .hd-status b{color:#5e4129}
 .hd-status .hd-mig{color:#c0561c;font-weight:700}
+
+/* 폰 터치 (2026-11-11): quick double taps on buttons (+/−, picks) no longer zoom the page, taps do not flash blue, and
+   a long press on the game screen does not pop the text-selection / copy menu. Pinch zoom still works. */
+html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button,[data-action],.boss-pick,.mig-row{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.app-shell{-webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text;user-select:text}
