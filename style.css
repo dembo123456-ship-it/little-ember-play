@@ -1357,3 +1357,11 @@ html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 button,[data-action],.boss-pick,.mig-row{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .app-shell{-webkit-touch-callout:none}
 input,textarea,select{-webkit-user-select:text;user-select:text}
+
+/* 2026-11-11 (폰에서 발견): under the max-width:760px rules the 의뢰 게시 button became full width inside a flex row and
+   squeezed the note next to it to 5px (one letter per line). Keep both on one row, wrapping if needed. */
+.quest-terms{flex-wrap:wrap}
+.quest-terms p{flex:1 1 200px;min-width:0}
+.quest-terms .primary-button{width:auto;flex:0 0 auto;margin-top:0}
+/* The game has its own light look: tell phone browsers not to repaint it dark (Chrome / Samsung Internet dark mode). */
+:root{color-scheme:only light}
