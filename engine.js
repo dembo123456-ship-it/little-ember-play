@@ -1045,7 +1045,7 @@
       else { a.status = 'visiting'; a.timer = 3 + i * 2; const point = browsingPoint(s, t, a); a.x = point.x; a.y = point.y; clearRoute(a); }
     }
     progressionHook('initialize', s); raidHook('init', s); campaignHook('init', s); warehouseHook('init', s); operationsHook('init', s); customerHook('init', s); seasonHook('init', s); researchHook('init', s); incidentHook('init', s); questHook('init', s); recruitmentHook('initialize', s, 0);
-    log(s, 'welcome', '작은 불꽃 대장간에 오신 것을 환영합니다. 직원과 모험가가 움직이기 시작했어요.');
+    log(s, 'welcome', '대장장이 라이프에 오신 것을 환영합니다. 직원과 모험가가 움직이기 시작했어요.');
     return applyCharacterProfiles(s);
   }
   function applyCharacterProfiles(s) {

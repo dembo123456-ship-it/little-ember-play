@@ -1372,3 +1372,19 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
   body::before{content:'↻';position:fixed;left:0;right:0;top:calc(50% - 74px);z-index:100001;text-align:center;font-size:56px;line-height:1;color:#f6d9a0;pointer-events:none}
   body::after{content:'휴대폰을 가로로 돌려 주세요\A가로 화면에서 하는 게임이에요';white-space:pre-line;word-break:keep-all;position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:96px 28px 0;text-align:center;font:600 17px/1.6 'Gowun Dodum','Noto Sans KR',sans-serif;color:#fff4dc;background:rgba(32,24,18,.94)}
 }
+:root[data-lang="ja"]{font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI','Meiryo','Noto Sans KR',system-ui,sans-serif}:root[data-lang="zh-Hans"]{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei','Noto Sans KR',system-ui,sans-serif}:root[data-lang="zh-Hant"]{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei','Noto Sans KR',system-ui,sans-serif}.language-select{min-width:150px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:var(--ink)}
+/* Other languages run longer than Korean: wider name/job columns, and long labels wrap instead of being cut. */
+:root:not([data-lang="ko"]) .roster-row{grid-template-columns:56px 30px 42px 118px 72px 86px minmax(0,1fr);gap:8px}:root:not([data-lang="ko"]) .roster-row .roster-name,:root:not([data-lang="ko"]) .roster-row .roster-place{white-space:normal;line-height:1.2}:root:not([data-lang="ko"]) .roster-row .roster-place{margin-left:4px}
+:root:not([data-lang="ko"]) .staff-hire-card.hire-row{grid-template-columns:40px 26px minmax(118px,1fr) auto auto auto auto!important;gap:6px}:root:not([data-lang="ko"]) .staff-hire-card .hire-stats{white-space:normal!important;max-width:150px;line-height:1.25}:root:not([data-lang="ko"]) .staff-hire-card .staff-name{white-space:normal!important;line-height:1.15}
+:root:not([data-lang="ko"]) .left-line{white-space:normal;align-items:flex-start}:root:not([data-lang="ko"]) .left-line .ll-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}:root:not([data-lang="ko"]) .left-line .ll-tag,:root:not([data-lang="ko"]) .left-line .ll-when{white-space:nowrap}
+/* 폰 글자 크게 (2026-11-13): on touch screens where the game frame is small, windows and the corner HUD are drawn bigger (--ui-boost, set by app.js). */
+.canvas-wrap[data-boost] .modal{zoom:var(--ui-boost);max-height:calc(704px / var(--ui-boost))!important;max-width:min(800px,calc(1264px / var(--ui-boost)))}
+.canvas-wrap[data-boost] .calendar-stack,.canvas-wrap[data-boost] .main-nav,.canvas-wrap[data-boost] .topbar,.canvas-wrap[data-boost] .game-feed,.canvas-wrap[data-boost] .toast-stack{zoom:calc(var(--ui-scale,1) * var(--ui-boost))}
+.icon-button#fullscreen-toggle.active{background:#f4e3bd}
+/* Turn-the-phone note in other languages */
+@media (orientation:portrait) and (pointer:coarse) and (max-width:900px){
+:root[data-lang="en"] body::after{content:'Please turn your phone sidewaysAThis game is played in landscape'}
+:root[data-lang="ja"] body::after{content:'スマホを横向きにしてくださいA横画面で遊ぶゲームです'}
+:root[data-lang="zh-Hans"] body::after{content:'请将手机横过来A本游戏需横屏游玩'}
+:root[data-lang="zh-Hant"] body::after{content:'請將手機橫過來A本遊戲需橫向遊玩'}
+}

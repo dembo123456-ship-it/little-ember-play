@@ -283,6 +283,16 @@
   function applyAudio(){window.ForgeAudio?.configure({music:!AUDIO_MUTED&&!!preferences.music,sfx:!AUDIO_MUTED&&!!preferences.sound,musicVolume:preferences.musicVolume,sfxVolume:preferences.sfxVolume});}
   // Music follows the place on screen: title, village, forge shop, workshop, world map.
   function audioPlace(){if(!window.ForgeAudio)return;const room=ui.view==='shop'&&scene?.getRoomFocus?scene.getRoomFocus():null;window.ForgeAudio.setPlace(document.getElementById('title-screen')&&!document.getElementById('title-screen').classList.contains('leaving')?'title':ui.view==='village'?'village':ui.view==='world'?'world':room==='workshop'?'workshop':'forge');}
+  // Full screen (phones especially): hides the browser bars; on phones also asks for landscape.
+  function fullscreenOn(){return !!(document.fullscreenElement||document.webkitFullscreenElement);}
+  function toggleFullscreen(){
+    const d=document,el=d.documentElement;
+    if(fullscreenOn()){(d.exitFullscreen||d.webkitExitFullscreen).call(d);return;}
+    const req=el.requestFullscreen||el.webkitRequestFullscreen;if(!req)return;
+    Promise.resolve(req.call(el,{navigationUI:'hide'})).then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{});}catch(_){}}).catch(()=>{});
+  }
+  function syncFullscreenButton(){const b=$('#fullscreen-toggle');if(!b)return;const d=document;b.hidden=!(d.fullscreenEnabled||d.webkitFullscreenEnabled);const on=fullscreenOn();b.title=on?'전체 화면 끄기':'전체 화면';b.setAttribute('aria-label',b.title);b.classList.toggle('active',on);}
+  if(typeof document!=='undefined'&&document.addEventListener){document.addEventListener('fullscreenchange',syncFullscreenButton);document.addEventListener('webkitfullscreenchange',syncFullscreenButton);}
   function savePreferences() {try {localStorage.setItem(PREF_KEY,JSON.stringify(preferences));}catch(_) {}}
   function saveTime(value,full=false) {
     if(!value)return '시각 정보 없음';
@@ -413,7 +423,7 @@
     const calendar=Sim.getCalendar(state),hour=calendar.hour;
     $('#day-value').textContent=calendar.label;
     $('#clock-value').textContent=(hour<12?'오전':'오후')+' '+(hour%12||12)+':'+String(calendar.minute).padStart(2,'0')+' · 달력 보기';
-    $('#location-eyebrow').textContent=(townCatalog().find(t=>t.id===town.id)?.englishName || town.id.toUpperCase())+' · LITTLE EMBER';
+    $('#location-eyebrow').textContent=(townCatalog().find(t=>t.id===town.id)?.englishName || town.id.toUpperCase())+' · BLACKSMITH LIFE';
     $('#location-heading').textContent=town.id==='greenwood'?'오늘도, 따뜻한 불을 피워요.':town.name+'에 피어난 작은 불꽃.';
     $('#location-sub').textContent=town.name+' · '+ownedTowns().length+'개 대장간이 함께 성장하고 있어요.';
     $('#scene-title').textContent=ui.view==='world'?'작은 불꽃의 세계':town.name+' 대장간';
@@ -1012,6 +1022,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
       '<div class="setting-row sound-row"><div><h3>효과음</h3><p>제작·판매·강화·행사 소리</p></div><input type="range" min="0" max="100" step="5" data-volume="sfx" value="'+Math.round(preferences.sfxVolume*100)+'" aria-label="효과음 크기"'+(preferences.sound?'':' disabled')+'><button class="secondary-button" data-action="sound-sfx">'+icon(preferences.sound?'sound':'mute')+(preferences.sound?'켜짐':'꺼짐')+'</button></div>';
     else if(tab==='help')body=helpMarkup();
     else if(tab==='etc')body=
+      (window.LittleEmberI18n?'<div class="setting-row"><div><h3>언어</h3><p>바꾸면 게임 화면을 다시 불러와요. 진행은 그대로예요.</p></div><select class="language-select" data-language aria-label="언어">'+window.LittleEmberI18n.languages.map(l=>'<option value="'+l.code+'"'+(l.code===window.LittleEmberI18n.current?' selected':'')+'>'+l.name+'</option>').join('')+'</select></div>':'')+
       (Ach?(()=>{const s=Ach.summary(achievementProfile(),null);return '<div class="setting-row"><div><h3>업적 기록</h3><p>'+s.unlockedCount+' / '+s.total+' 달성 · 새 게임을 시작해도 남아요.</p></div><div class="setting-actions"><button class="secondary-button" data-action="achievements-export">'+icon('download')+' 내보내기</button><button class="secondary-button danger-button" data-action="achievements-reset-prompt">기록 지우기</button></div></div><div id="achievements-reset-confirm" class="reset-confirm" hidden>업적 기록을 모두 지울까요? 되돌릴 수 없어요.<div><button class="secondary-button danger-button" data-action="achievements-reset-confirm">모두 지우기</button><button class="secondary-button" data-action="achievements-reset-cancel">취소</button></div></div>';})():'')+
       '<div class="setting-row"><div><h3>새 대장간 시작하기</h3><p>기존 진행을 별도로 보관하고 첫날로 돌아갑니다.</p></div><button class="secondary-button danger-button" data-action="reset-prompt">'+icon('reset')+' 새로 시작</button></div>'+
       '<div id="reset-confirm" class="reset-confirm" hidden>첫날부터 새로 시작할까요? 현재 저장은 복구용으로 별도 보관합니다.<div><button class="secondary-button danger-button" data-action="reset-confirm">새 대장간으로 시작</button><button class="secondary-button" data-action="reset-cancel">취소</button></div></div>';
@@ -1354,7 +1365,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   function currentTitle(){if(!Ach)return null;const p=achievementProfile();return p&&p.title&&Ach.LIST.find(a=>a.id===p.title)?.title||null;}
   function renderBrandTitle(){
     const el=$('.brand small');if(!el||!Ach)return;const title=currentTitle();
-    const text=title?'칭호 · '+title:'LITTLE EMBER · A BLACKSMITH STORY';if(el.textContent!==text)el.textContent=text;
+    const text=title?'칭호 · '+title:'BLACKSMITH LIFE';if(el.textContent!==text)el.textContent=text;
   }
   function checkAchievements(){
     const p=achievementProfile();if(!p||saveBlocked)return;
@@ -1370,7 +1381,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   //    and hires someone. A waiting step moves on only when the player has done the lit thing; a watching step lets the
   //    game run until the work is really done. If the needed window was closed it is opened again.
   const TOUR_STEPS=[
-    {title:'작은 불꽃 대장간에 오신 걸 환영해요!',body:'모험가들에게 장비를 만들어 팔고, 마을에서 제일가는 대장간으로 키워 보세요. 화면을 하나씩 알려 드릴게요.'},
+    {title:'대장장이 라이프에 오신 걸 환영해요!',body:'모험가들에게 장비를 만들어 팔고, 마을에서 제일가는 대장간으로 키워 보세요. 화면을 하나씩 알려 드릴게요.'},
     {target:'.village-forge@bottom',title:'우리 대장간',body:'누르면 대장간 안으로 들어가요. 작업대에서 장비를 만들고, 다 만든 장비를 진열하면 판매 직원이 모험가에게 팔아요.'},
     {target:'.village-inn@bottom',title:'여관',body:'사냥에서 돌아온 모험가들이 쉬는 곳이에요. 여관이 넓을수록 마을에 머무는 모험가가 늘어나요.'},
     {target:'#calendar-chip',title:'달력',body:'오늘 날짜와 이번 계절 행사예요. 누르면 달력과 축제를 볼 수 있어요.'},
@@ -1918,6 +1929,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     else if(action==='close')closeModal();
     else if(action==='help'){cancelPlacement();showModal('help');}
     else if(action==='settings')showModal('settings');
+    else if(action==='fullscreen'){toggleFullscreen();}
     else if(action==='sound'){const on=!(preferences.sound||preferences.music);preferences.sound=on;preferences.music=on;applyAudio();sfx('click');savePreferences();renderHeader();if(ui.modal==='settings')renderSettings();}
     else if(action==='sound-music'){preferences.music=!preferences.music;applyAudio();savePreferences();renderHeader();renderSettings();}
     else if(action==='sound-sfx'){preferences.sound=!preferences.sound;applyAudio();sfx('click');savePreferences();renderHeader();renderSettings();}
@@ -1952,6 +1964,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   $('#modal-backdrop').addEventListener('click',e=>{if(e.target===$('#modal-backdrop'))closeModal();});
   // Volume sliders in the settings window (live while dragging, saved on release).
   document.addEventListener('input',e=>{const kind=e.target.dataset&&e.target.dataset.volume;if(!kind)return;const v=Math.max(0,Math.min(1,Number(e.target.value)/100));if(kind==='music')preferences.musicVolume=v;else preferences.sfxVolume=v;applyAudio();});
+  document.addEventListener('change',e=>{if(e.target.dataset&&'language' in e.target.dataset&&window.LittleEmberI18n){savePreferences();try{save(false);}catch(_){}window.LittleEmberI18n.set(e.target.value);}});
   document.addEventListener('change',e=>{const kind=e.target.dataset&&e.target.dataset.volume;if(!kind)return;savePreferences();if(kind==='sfx')sfx('sale');});
   document.addEventListener('submit',e=>{
     if(e.target.dataset.operationForm){e.preventDefault();submitOperationForm(e.target);return;}
@@ -1994,7 +2007,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
       const result=saveStore.save(loaded,{replace:true});renderSaveStatus();
       if(!result.ok){toast(saveProblem(result.reason),true);e.target.value='';return;}
       adoptSavedState(loaded);toast(state.day+'일 차 대장간을 불러왔어요.');
-    } catch(_){toast('올바른 작은 불꽃 대장간 저장 파일이 아니에요. 현재 진행은 유지됩니다.',true);}e.target.value='';
+    } catch(_){toast('올바른 대장장이 라이프 저장 파일이 아니에요. 현재 진행은 유지됩니다.',true);}e.target.value='';
   });
   document.addEventListener('visibilitychange',()=>{lastFrame=performance.now();if(document.hidden)save();});
   window.addEventListener('pagehide',()=>save());
@@ -2024,6 +2037,18 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   document.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-tip]');if(el)showTip(el);else hideTip();});
   document.addEventListener('click',hideTip,true);
 
+  // Long press on a phone shows the same explanation a mouse gets by hovering (data-tip, or the button's title).
+  {let lpTimer=0,lpFired=false,lpX=0,lpY=0;
+    document.addEventListener('touchstart',e=>{
+      clearTimeout(lpTimer);lpFired=false;hideTip();
+      const el=e.target.closest?.('[data-tip],[title]');if(!el||el.tagName==='CANVAS'||e.touches.length!==1)return;
+      lpX=e.touches[0].clientX;lpY=e.touches[0].clientY;
+      lpTimer=setTimeout(()=>{if(!el.dataset.tip){const t=el.getAttribute('title');if(!t)return;el.dataset.tip=t;}lpFired=true;showTip(el);try{navigator.vibrate&&navigator.vibrate(12);}catch(_){}},450);
+    },{passive:true});
+    document.addEventListener('touchmove',e=>{const t=e.touches[0];if(t&&Math.hypot(t.clientX-lpX,t.clientY-lpY)>10)clearTimeout(lpTimer);},{passive:true});
+    document.addEventListener('touchend',e=>{clearTimeout(lpTimer);if(lpFired){e.preventDefault();lpFired=false;}},{passive:false});
+    document.addEventListener('touchcancel',()=>clearTimeout(lpTimer),{passive:true});
+  }
   // UI scale: everything drawn over the game uses 1280x720 design pixels and scales with the game frame
   // (frame width / 1280), like the canvas itself. Exposed as --ui-scale on #canvas-wrap.
   const UI_DESIGN_WIDTH=1280;
@@ -2033,6 +2058,10 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     if(wrap.dataset&&wrap.dataset.uiScale===value)return;
   if(wrap.dataset)wrap.dataset.uiScale=value;
   wrap.style?.setProperty?.('--ui-scale',value);
+    // Phones: the 1280-wide design shrinks to ~60%, so windows and side labels get extra size (up to 1.35x).
+    const coarse=!!(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches);
+    const boost=coarse?Math.min(1.35,Math.max(1,.78/scale)):1;
+    if(boost>1.01){wrap.style?.setProperty?.('--ui-boost',boost.toFixed(3));wrap.setAttribute?.('data-boost','');}else{wrap.removeAttribute?.('data-boost');}
   }
   if(window.ResizeObserver&&$('#canvas-wrap'))new ResizeObserver(updateUiScale).observe($('#canvas-wrap'));
   window.addEventListener('resize',updateUiScale);
@@ -2165,7 +2194,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   }
   // This timer does not depend on animation frames or scene rendering succeeding.
   setInterval(()=>save(),5000);
-  savePreferences();applyAudio();portraits();render(true);renderSaveStatus();requestAnimationFrame(loop);
+  savePreferences();applyAudio();syncFullscreenButton();portraits();render(true);renderSaveStatus();requestAnimationFrame(loop);
   // Title screen: the game waits underneath (paused). The one button continues the saved game, or starts a new one when there is none.
   // Only in a real browser page; ?notitle skips it (tests and tools).
   (function showTitle(){
@@ -2175,6 +2204,13 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     el.innerHTML='<div class="title-stage"><div class="title-bg"></div><img class="title-logo" src="assets/title/title-logo.png" alt="대장장이 라이프"><button type="button" class="title-start" aria-label="게임 시작"></button></div>';
     // Inside the game frame (#canvas-wrap) so it always has the game screen's place and size.
     ($('#canvas-wrap')||document.body).append(el);
+    /* Per-language title art (docs/title-art-request.md); keeps the Korean art when a file is missing. */
+    {const lang=window.LittleEmberI18n&&window.LittleEmberI18n.current;
+      /* Literal paths so the one-file package can embed them. */
+      const ART={en:['assets/title/title-logo-en.png','assets/title/start-button-en.png'],ja:['assets/title/title-logo-ja.png','assets/title/start-button-ja.png'],'zh-Hans':['assets/title/title-logo-zh-Hans.png','assets/title/start-button-zh-Hans.png'],'zh-Hant':['assets/title/title-logo-zh-Hant.png','assets/title/start-button-zh-Hant.png']}[lang];
+      if(ART){el.querySelector('.title-logo').alt=window.LittleEmberI18n.t('대장장이 라이프');el.querySelector('.title-start').setAttribute('aria-label',window.LittleEmberI18n.t('게임 시작'));}
+      if(ART){const logo=el.querySelector('.title-logo');const src=ART[0];const test=new Image();test.onload=()=>{logo.src=src;};test.src=src;
+        const btnSrc=ART[1];const tb=new Image();tb.onload=()=>{el.querySelector('.title-start').style.backgroundImage='url('+btnSrc+')';};tb.src=btnSrc;}}
     const start=el.querySelector('.title-start');
     // While the title is up, keys belong to it: Enter/Space start wherever focus is, and game keys
     // (Space = pause toggle, 1/2 = speed, town hops) must not run the game behind the title.
