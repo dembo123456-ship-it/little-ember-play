@@ -124,6 +124,16 @@
           run: (s, i) => { if (random(s) < .5) { gold(s, -Math.round(i.data.price * 2 / 3)); addMat(s, 'crystal', 10); addMat(s, merchantSecond(i), 10); return '흥정 성공! 시세의 40%에 샀어요.'; } effect(s, 'price:crystal', 1.1, 3); effect(s, 'price:mythril', 1.1, 3); return '상인이 화가 나서 옆 마을로 갔어요. 3일간 수정·미스릴 값 +10%.'; } }],
       ignore: { info: () => '3일간 수정·미스릴 값 +10%', run: s => { effect(s, 'price:crystal', 1.1, 3); effect(s, 'price:mythril', 1.1, 3); return '상인이 옆 마을 가게에 팔았어요. 3일간 수정·미스릴 값 +10%.'; } } });
 
+    // 2026-11-14: the very first incident of a game. Two ways to fill one order: many quick pieces, or one good piece.
+    def({ key: 'E00', name: '첫 대량 주문', cat: '손님', tier: 'three', easy: true, first: true,
+      when: (s, t) => weaponRecipes(s, t).length > 0,
+      setup: (s, t, d) => { const list = weaponRecipes(s, t).sort((a, b) => a.price - b.price); const r = list[0]; d.price = r.price; },
+      story: () => '마을 경비대장이 찾아왔어요. "경비대 장비를 맡기고 싶은데, 어느 쪽으로 해 주시겠소?"',
+      choices: [
+        { label: '많이, 빨리', info: (s, i) => '3일 안에 무기 4개 · +' + num(i.data.price * 4 * 1.5) + ' G', run: (s, i) => ({ task: { type: 'deliver', days: 3, needs: [{ slot: 'weapon', n: 4, label: '무기' }], reward: Math.round(i.data.price * 4 * 1.5), rep: 2, failRep: -2 } }) },
+        { label: '하나라도 좋게', info: (s, i) => '6일 안에 우수 이상 무기 1개 · +' + num(i.data.price * 4) + ' G · 명성 +6', run: (s, i) => ({ task: { type: 'deliver', days: 6, needs: [{ slot: 'weapon', quality: 'fine', n: 1, label: '우수 이상 무기' }], reward: Math.round(i.data.price * 4), rep: 6, failRep: -2 } }) }],
+      ignore: { info: () => '명성 −1', run: s => { rep(s, -1); return '경비대장이 다른 대장간으로 갔어요. 명성 −1.'; } } });
+
     def({ key: 'E02', name: '급한 손님', cat: '손님', tier: 'instant', easy: true,
       when: (s, t) => weaponRecipes(s, t).length > 0,
       setup: (s, t, d) => { const list = weaponRecipes(s, t); const r = list[int(s, 0, list.length - 1)]; d.recipeId = r.id; d.recipeName = r.name; d.reward = r.price * 2; },
@@ -611,6 +621,8 @@
         // General incidents happen in the town on screen; each town's own incidents (E45~E59) are checked against that town,
         // so they come even while the player looks elsewhere (2026-11-09: before, other towns' incidents never came).
         let list = eligible(s, t).filter(x => !x.town).map(x => ({ e: x, t }));
+        // The first incident of a game is the order choice (E00); it never comes again after that.
+        if (!st.flags.firstOrder && list.some(x => x.e.first)) list = list.filter(x => x.e.first); else list = list.filter(x => !x.e.first);
         for (const tt of towns(s)) list.push(...eligible(s, tt).filter(x => x.town === tt.id).map(x => ({ e: x, t: tt })));
         if (st.flags.grudge && s.time - st.flags.grudge < 15 * DAY && list.some(x => x.e.key === 'E13')) list = list.filter(x => x.e.key === 'E13');
         if (list.some(x => x.e.after)) list = list.filter(x => x.e.after); // a waiting follow-up comes first
@@ -627,7 +639,7 @@
         try { if (e.setup) e.setup(s, t, data); } catch (_) { return null; }
       }
       const inc = { id: id(s, 'incident'), key: e.key, tier: e.tier, townId: t.id, createdAt: s.time, status: 'pending', deadline: e.tier === 'instant' ? null : s.time + TIERS[e.tier].days * DAY, instantLeft: e.tier === 'instant' ? INSTANT_REAL_SECONDS : null, data, task: null, result: null };
-      st.list.push(inc); st.lastSeen[e.key] = s.time;
+      st.list.push(inc); st.lastSeen[e.key] = s.time; if (e.first) st.flags.firstOrder = s.time;
       if (st.chains && st.chains[e.key] != null) delete st.chains[e.key]; // a booked follow-up has now come
       if (e.key === 'E13') delete st.flags.grudge;
       log(s, 'incident', '돌발 사건 · ' + e.name + ' (' + TIERS[e.tier].label + ')', { townId: t.id, incidentId: inc.id });

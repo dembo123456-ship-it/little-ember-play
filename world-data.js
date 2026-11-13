@@ -123,16 +123,31 @@
     mountainSpines:[[[930,280],[870,370],[790,450],[710,520]],[[1200,240],[1150,340],[1100,450],[1060,535]],[[1550,330],[1620,365],[1730,440]],[[1750,850],[1790,940],[1780,1020]]]
   };
 
+  // 2026-11-14: every location built from a donor gets its own trait, so it plays differently from the donor
+  // (time, gold, experience and material amounts), not only a new name and level.
+  const REGION_TRAITS = {
+    rich:   {name:'풍요로운 땅',text:'재료가 1.5배 나오지만 사냥이 25% 오래 걸려요.',duration:1.25,gold:1,xp:1,loot:1.5},
+    swift:  {name:'지름길',text:'사냥이 30% 빨리 끝나지만 골드가 15% 적어요.',duration:.7,gold:.85,xp:1,loot:1},
+    treasure:{name:'보물 사냥터',text:'골드가 1.4배지만 경험치가 15% 적어요.',duration:1,gold:1.4,xp:.85,loot:1},
+    training:{name:'수련장',text:'경험치가 1.5배지만 재료가 20% 적어요.',duration:1,gold:1,xp:1.5,loot:.8}
+  };
+  const TRAIT_ORDER = ['rich','swift','treasure','training'];
   function extendData(DATA) {
     const existing=new Map(DATA.regions.map(r=>[r.id,r]));
+    let copied=0;
     for (const place of LOCATIONS) {
       let region=existing.get(place.id);
       if (!region) {
         const donor=existing.get(place.donorId);
         if (!donor) throw new Error('Missing world region donor: '+place.donorId);
+        const traitId=TRAIT_ORDER[copied++%TRAIT_ORDER.length],trait=REGION_TRAITS[traitId];
+        const scale=([lo,hi])=>[Math.max(1,Math.round(lo*trait.loot)),Math.max(1,Math.round(hi*trait.loot))];
         // A donor may already have its new difficulty. Preserve this location's
         // own original threshold, rather than inheriting the donor's baseline.
-        region={...donor,id:place.id,name:place.name,minPower:place.minPower,baseMinPower:place.baseMinPower,loot:Object.fromEntries(Object.entries(donor.loot).map(([m,v])=>[m,[...v]])),description:place.name+' 일대를 탐험하며 '+donor.name+'에서 얻을 수 있는 재료를 찾습니다.'};
+        region={...donor,id:place.id,name:place.name,minPower:place.minPower,baseMinPower:place.baseMinPower,trait:traitId,traitName:trait.name,
+          duration:Math.max(8,Math.round(donor.duration*trait.duration)),gold:Math.round(donor.gold*trait.gold),xp:Math.round(donor.xp*trait.xp),
+          loot:Object.fromEntries(Object.entries(donor.loot).map(([m,v])=>[m,scale(v)])),
+          traitText:trait.text,description:place.name+' 일대를 탐험하며 '+donor.name+'에서 얻을 수 있는 재료를 찾습니다.'};
         DATA.regions.push(region);existing.set(region.id,region);
       }
       if (region.baseMinPower == null) region.baseMinPower=region.minPower;

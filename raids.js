@@ -13,12 +13,12 @@
   const BOSSES = Object.freeze([
     // 2026-11 balance: the first boss is a ~1 hour goal (was beatable by starting heroes within a minute).
     // appearAt 6600 game s = 55 real minutes at 1x.
-    { id: 'moss_warden', name: '고목 수호자', regionId: 'greenwood', appearAt: 6600, minPower: 130, partySize: 3, duration: 46, cooldown: 300, materialId: 'ancient_heart', gold: 180, xp: 120, weak: ['axe', 'crossbow'] },
+    { id: 'moss_warden', name: '고목 수호자', regionId: 'greenwood', appearAt: 6600, minPower: 130, partySize: 3, duration: 46, cooldown: 300, materialId: 'ancient_heart', gold: 180, xp: 120, weak: ['axe', 'crossbow'], tactic: 'support' },
     // Graduation exam for Greenwood: just below the migration threshold (150).
-    { id: 'stone_colossus', name: '바위 거인', regionId: 'quarry', appearAt: 7800, minPower: 60, partySize: 4, duration: 62, cooldown: 460, materialId: 'giant_core', gold: 220, xp: 140, weak: ['gauntlet', 'spear'] },
-    { id: 'ruin_oracle', name: '별을 삼킨 예언자', regionId: 'ruins', minPower: 90, partySize: 4, duration: 76, cooldown: 620, materialId: 'star_fragment', gold: 290, xp: 175, weak: ['dagger', 'bow'] },
-    { id: 'frost_drake', name: '서리날개 용', regionId: 'ridge', minPower: 150, partySize: 5, duration: 94, cooldown: 800, materialId: 'frost_scale', gold: 470, xp: 260, weak: ['staff', 'crossbow'] },
-    { id: 'abyss_sovereign', name: '심연의 군주', regionId: 'abyss', minPower: 240, partySize: 6, duration: 116, cooldown: 1040, materialId: 'abyss_crystal', gold: 720, xp: 380, weak: ['sword', 'spear'] },
+    { id: 'stone_colossus', name: '바위 거인', regionId: 'quarry', appearAt: 7800, minPower: 60, partySize: 4, duration: 62, cooldown: 460, materialId: 'giant_core', gold: 220, xp: 140, weak: ['gauntlet', 'spear'], tactic: 'power' },
+    { id: 'ruin_oracle', name: '별을 삼킨 예언자', regionId: 'ruins', minPower: 90, partySize: 4, duration: 76, cooldown: 620, materialId: 'star_fragment', gold: 290, xp: 175, weak: ['dagger', 'bow'], tactic: 'variety' },
+    { id: 'frost_drake', name: '서리날개 용', regionId: 'ridge', minPower: 150, partySize: 5, duration: 94, cooldown: 800, materialId: 'frost_scale', gold: 470, xp: 260, weak: ['staff', 'crossbow'], tactic: 'support' },
+    { id: 'abyss_sovereign', name: '심연의 군주', regionId: 'abyss', minPower: 240, partySize: 6, duration: 116, cooldown: 1040, materialId: 'abyss_crystal', gold: 720, xp: 380, weak: ['sword', 'spear'], tactic: 'variety' },
     // 2026-11-10 사용자 결정: 서리문(5호점)의 최종 보스. Its first fall is the balance target's end point
     // (s.stats.clearedAt; the word "클리어" is never shown in the game). Drops 3 rare recipes like the others.
     // minPower is the base; world-data adds the icekeep region offset (→ ~1160).
@@ -125,6 +125,8 @@
     // and fewer members than the boss allows (−).
     // 보스 약점 (2026-11-10 사용자): each boss is weak to two weapon types; every member holding one of them adds +5%p
     // (at most +15%p). It is the equipped weapon that counts, so the forge can make the right weapons for a fight.
+    // support: healing matters (cleric +16%p) · power: raw strength (power counts ~2.4x, cleric +4%p) · variety: many jobs (+12%p).
+    const BOSS_TACTICS = { none: { power: .17, support: .10, variety: .06 }, support: { power: .15, support: .16, variety: .03 }, power: { power: .40, support: .04, variety: .03 }, variety: { power: .15, support: .06, variety: .12 } };
     const weaponType = a => { const w = a && a.equipment && a.equipment.weapon; const r = w && (DATA.recipes || []).find(x => x.id === w.recipeId); return r ? r.type : null; };
     const hitsWeakness = (boss, a) => !!(boss.weak && boss.weak.includes(weaponType(a)));
     function partyChance(boss, members) {
@@ -133,7 +135,9 @@
       const average = powers.reduce((a, b) => a + b, 0) / members.length;
       const support = roles.includes('support'), diversity = new Set(roles).size, missing = Math.max(0, boss.partySize - members.length);
       const weak = Math.min(3, members.filter(a => hitsWeakness(boss, a)).length) * .05;
-      return clamp(.58 + (average / boss.minPower - 1) * .17 + (support ? .10 : 0) + (diversity >= 3 ? .06 : diversity >= 2 ? .025 : 0) - missing * .09 + weak, .05, .96);
+      // 2026-11-14: each boss favours a different party (BOSS_TACTICS), so one formation is not the answer everywhere.
+      const k = BOSS_TACTICS[boss.tactic] || BOSS_TACTICS.none;
+      return clamp(.58 + (average / boss.minPower - 1) * k.power + (support ? k.support : 0) + (diversity >= 3 ? k.variety : diversity >= 2 ? k.variety * .42 : 0) - missing * .09 + weak, .05, .96);
     }
     function getDispatchInfo(s, bossId) {
       const boss = bossMap[bossId]; if (!boss) return null;

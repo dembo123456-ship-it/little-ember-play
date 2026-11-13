@@ -1323,7 +1323,7 @@ function getExpansionCost(s) { const t = getTown(s); return t.level >= 5 ? null 
     t.queue.splice(t.queue.indexOf(entry), 1); s.stats.crafted++;
     customerHook('onCraft', s, t, item, worker, entry);
     const destination = isCustomerItemReserved(s, item.id) ? '카운터 손님에게 전달할 준비가 되었습니다.' : item.autoProtected ? '자동 보관 규칙에 따라 창고에 잠금 보관했습니다.' : '창고에 보관했습니다. 진열해야 판매됩니다.';
-    log(s, 'crafted', worker.name + ' · ' + (quality === 'normal' ? '' : DATA.qualities[quality].name + ' ') + r.name + ' 완성 · ' + destination, { townId: t.id, recipeId: r.id, quality, itemId: item.id });
+    log(s, 'crafted', worker.name + ' · ' + (quality === 'normal' ? '' : DATA.qualities[quality].name + ' ') + r.name + ' 완성 · ' + destination + ' · 예상 판매가 ' + item.price + ' G', { townId: t.id, recipeId: r.id, quality, itemId: item.id, gold: item.price });
   }
   function tickStaff(s, t, dt) {
     for (const f of t.facilities) if (f.type !== 'enhance') f.active = false;
@@ -1552,7 +1552,9 @@ function getExpansionCost(s) { const t = getTown(s); return t.level >= 5 ? null 
   function settleSale(s, a, item, price, worker) {
     const town = getTown(s, a.townId), discount = a.discount;
     a.gold -= price; s.gold += price; s.stats.earned += price; s.stats.sold++; s.reputation++; a.discount = 0;
+    const powerBefore = Math.round(getPower(a));
     town.inventory.splice(town.inventory.indexOf(item), 1); item.listed = false; equip(a, item);
+    const powerAfter = Math.round(getPower(a));
     if (worker) {
       worker.stamina = Math.max(0, worker.stamina - 3 * personalityEffect(worker, 'staffFatigue'));
       worker.eloquence = Math.min(100, worker.eloquence + .1);
@@ -1565,7 +1567,7 @@ function getExpansionCost(s) { const t = getTown(s); return t.level >= 5 ? null 
       worker.salesSkill = worker.eloquence;
     }
     setSatisfactionBubble(s, a, 'heart');
-    log(s, 'sale', a.name + ' · ' + item.name + ' 구매 · +' + price + ' G' + (discount ? ' (' + Math.round(discount * 100) + '% 의뢰 할인)' : ''), { townId: town.id, adventurerId: a.id, itemId: item.id, recipeId: item.recipeId, gold: price, discount });
+    log(s, 'sale', a.name + ' · ' + item.name + ' 구매 · +' + price + ' G' + (discount ? ' (' + Math.round(discount * 100) + '% 의뢰 할인)' : '') + (powerAfter > powerBefore ? ' · 전투력 ' + powerBefore + ' → ' + powerAfter : ''), { townId: town.id, adventurerId: a.id, itemId: item.id, recipeId: item.recipeId, gold: price, discount, powerBefore, powerAfter });
     operationsHook('reconcile', s);
     return true;
   }
@@ -1634,12 +1636,14 @@ function getExpansionCost(s) { const t = getTown(s); return t.level >= 5 ? null 
     const hero = s.adventurers.find(a => a.id === order.adventurerId);
     const payout = Math.min(orderPayout(order, item), order.escrow);
     const index = t.inventory.indexOf(item); if (index >= 0) t.inventory.splice(index, 1);
-    item.listed = false; item.locked = false; if (order.heirloom) item.heirloom = true; equip(hero, item); hero.gold += order.heirloom ? Math.max(0, Math.min(order.escrow - payout, order.paid ?? 0)) : order.escrow - payout;
+    const powerBefore = Math.round(getPower(hero));
+    item.listed = false; item.locked = false; if (order.heirloom) item.heirloom = true; equip(hero, item);
+    const powerAfter = Math.round(getPower(hero)), powerText = powerAfter > powerBefore ? ' · 전투력 ' + powerBefore + ' → ' + powerAfter : ''; hero.gold += order.heirloom ? Math.max(0, Math.min(order.escrow - payout, order.paid ?? 0)) : order.escrow - payout;
     s.gold += payout; s.stats.earned += payout; s.stats.sold++; s.stats.orders++; s.reputation += order.heirloom ? (recipeMap[order.recipeId].bossReputation || 6) : 3;
     if (order.heirloom) { if (!Array.isArray(s.stats.rareCrafted)) s.stats.rareCrafted = []; if (!s.stats.rareCrafted.includes(item.recipeId)) s.stats.rareCrafted.push(item.recipeId); }
     order.status = 'completed'; order.completedAt = s.time; order.itemId = item.id; order.payout = payout; order.escrow = 0; delete order.reservedItemId;
-    if (order.heirloom) log(s, 'order-complete', hero.name + '의 전용 장비 ' + item.name + ' 완성! 이제 늘 착용하고 다녀요 · 제작비 +' + payout + ' G', { townId: t.id, adventurerId: hero.id, orderId: order.id, itemId: item.id, recipeId: item.recipeId, gold: payout });
-    else log(s, 'order-complete', hero.name + '에게 ' + (item.quality === 'normal' ? '' : DATA.qualities[item.quality].name + ' ') + item.name + ' 전달 · +' + payout + ' G', { townId: t.id, adventurerId: hero.id, orderId: order.id, itemId: item.id, recipeId: item.recipeId, gold: payout });
+    if (order.heirloom) log(s, 'order-complete', hero.name + '의 전용 장비 ' + item.name + ' 완성! 이제 늘 착용하고 다녀요 · 제작비 +' + payout + ' G' + powerText, { townId: t.id, adventurerId: hero.id, orderId: order.id, itemId: item.id, recipeId: item.recipeId, gold: payout });
+    else log(s, 'order-complete', hero.name + '에게 ' + (item.quality === 'normal' ? '' : DATA.qualities[item.quality].name + ' ') + item.name + ' 전달 · +' + payout + ' G' + powerText, { townId: t.id, adventurerId: hero.id, orderId: order.id, itemId: item.id, recipeId: item.recipeId, gold: payout });
     operationsHook('reconcile', s); updateGoals(s);
     return payout;
   }

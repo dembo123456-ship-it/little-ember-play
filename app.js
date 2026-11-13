@@ -171,7 +171,7 @@
     // Sound v1 (music + effects): on by default; the old beep switch (default off) is not carried over.
     if(p.audioVersion===1){preferences.sound=p.sound!==false;preferences.music=p.music!==false;const vol=(v,d)=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):d;preferences.musicVolume=vol(p.musicVolume,.55);preferences.sfxVolume=vol(p.sfxVolume,.75);}preferences.speed=p.speedVersion===2?([1,2].includes(p.speed)?p.speed:1):(p.speed===4?2:1);preferences.speedVersion=2;
     // Tutorial flags were saved but never read back, so a reload forgot them (2026-11-09 fix).
-    if(p.tutorialDone===true)preferences.tutorialDone=true;if(p.missionsDone===true)preferences.missionsDone=true;Object.assign(preferences,ForgeNotifications.normalizePreferences(p),{centralNotifications:false});} catch (_) {}
+    if(p.tutorialDone===true)preferences.tutorialDone=true;if(p.missionsDone===true)preferences.missionsDone=true;if(p.tipsSeen&&typeof p.tipsSeen==='object')preferences.tipsSeen=Object.fromEntries(Object.keys(p.tipsSeen).filter(k=>p.tipsSeen[k]===true).map(k=>[k,true]));Object.assign(preferences,ForgeNotifications.normalizePreferences(p),{centralNotifications:false});} catch (_) {}
   // Material request board draft: one row per gatherable material (checked + amount), reset each time the window opens.
   const questMaterials = () => Object.entries(DATA.materials).filter(([k,m])=>m.buyable!==false&&!m.rare).map(([k])=>k);
   const newQuestDraft = () => ({rows:Object.fromEntries(questMaterials().map(k=>[k,{checked:false,amount:10}]))});
@@ -651,6 +651,7 @@
     renderModalSwitch(type);
     renderModal(true);setNav(['adventurers','staff','hero','candidate','training'].includes(type)?'characters':['upgrades','inn','facility'].includes(type)?'facilities':type==='town'?'world':type);
     setTimeout(()=>$('#modal [data-action="close"]')?.focus({preventScroll:true}),0);
+    showFirstTip(type);
   }
   function closeModal() {
     if(ui.modal)sfx('close');
@@ -702,6 +703,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     $('.work-panel').hidden=ui.view!=='shop';
     $$('[data-action="view"]').forEach(b=>b.classList.toggle('active',b.dataset.view===ui.view));
     if(!ui.modal)setNav(ui.view==='world'?'world':'shop');invalidate();render(true);
+    if(ui.view==='world')showFirstTip('world');
   }
   function refitSceneCamera() {
     if(!scene)return;
@@ -1269,7 +1271,10 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     // 보스 약점 (2026-11-10): one line — which weapons it is weak to and what that does.
     const weakNames=(b.weak||(DATA.bosses||[]).find(x=>x.id===b.id)?.weak||[]).map(t=>(DATA.equipment?.weaponTypes||[]).find(w=>w.id===t)?.name||t);
     const weakLine=weakNames.length?'<p class="boss-weak">'+icon('sword')+' 약점 <b>'+escape(weakNames.join('·'))+'</b> — 이 무기를 든 모험가 1명마다 성공률 +5%p (최대 +15%p)</p>':'';
-    const drops=weakLine+'<div class="boss-drops"><h4>'+icon('gem')+' 드랍품</h4><div class="boss-drop-list">'
+    const tactic=b.tactic||(DATA.bosses||[]).find(x=>x.id===b.id)?.tactic;
+    const tacticText={support:'회복이 중요해요 — 성직자가 있으면 성공률 +16%p',power:'힘으로 밀어붙여요 — 전투력이 높을수록 성공률이 크게 올라요',variety:'여러 직업이 필요해요 — 직업 3가지 이상이면 성공률 +12%p'}[tactic];
+    const tacticLine=tacticText?'<p class="boss-weak">'+icon('star')+' 공략 <b>'+escape(tacticText)+'</b></p>':'';
+    const drops=weakLine+tacticLine+'<div class="boss-drops"><h4>'+icon('gem')+' 드랍품</h4><div class="boss-drop-list">'
       +recipes.slice(0,6).map(rc=>'<span class="boss-drop" data-tip="'+escape(rc.name+' · 희귀 설계도')+'">'+itemArt(rc)+'<b>'+escape(rc.name)+'</b></span>').join('')
       +(recipes.length>6?'<span class="boss-drop more">외 '+(recipes.length-6)+'종</span>':'')+'</div>'
       +'<p class="boss-drop-note">'+itemPic('rare_recipe_scroll','rare-scroll')+'희귀 설계도 <b class="rare-rate">'+Math.round((b.rareChance??.12)*100)+'%</b> (토벌대 중 한 명 · 확정까지 '+(b.pityLeft||8)+'회) · 골드 약 '+num(b.gold)+' G씩 · 경험치 '+num(b.xp)+' · 강화석 '+stones+'개</p></div>';
@@ -1380,16 +1385,12 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   // 2) Missions (once per browser, cannot be skipped): the player really handles a craft request, sets up auto-craft
   //    and hires someone. A waiting step moves on only when the player has done the lit thing; a watching step lets the
   //    game run until the work is really done. If the needed window was closed it is opened again.
+  // 2026-11-14: the tour is four cards; everything else is explained the first time its window opens (FIRST_TIPS).
   const TOUR_STEPS=[
-    {title:'대장장이 라이프에 오신 걸 환영해요!',body:'모험가들에게 장비를 만들어 팔고, 마을에서 제일가는 대장간으로 키워 보세요. 화면을 하나씩 알려 드릴게요.'},
-    {target:'.village-forge@bottom',title:'우리 대장간',body:'누르면 대장간 안으로 들어가요. 작업대에서 장비를 만들고, 다 만든 장비를 진열하면 판매 직원이 모험가에게 팔아요.'},
-    {target:'.village-inn@bottom',title:'여관',body:'사냥에서 돌아온 모험가들이 쉬는 곳이에요. 여관이 넓을수록 마을에 머무는 모험가가 늘어나요.'},
-    {target:'#calendar-chip',title:'달력',body:'오늘 날짜와 이번 계절 행사예요. 누르면 달력과 축제를 볼 수 있어요.'},
-    {target:'.gold-pill',title:'골드',body:'가진 돈이에요. 누르면 월급과 골드를 쓸 곳(성장 준비·연구소)을 볼 수 있어요.'},
-    {target:'.main-nav',title:'메뉴',body:'대장간 · 캐릭터 · 의뢰 · 시설 배치 · 자동 운영 · 월드맵 · 연구 · 업적 · 환경설정이 모두 여기 있어요.'},
-    {target:'.main-nav [data-tab="world"]',title:'월드맵',body:'모험가들이 사냥하는 곳과 다른 마을이 있어요. 조건을 채우면 다음 마을에 새 지점을 열 수 있어요.'},
-    {target:'#game-feed',title:'소식',body:'돌발 사건, 명품 완성, 마을 습격 같은 소식이 여기에 올라와요. 누르면 그 일을 바로 볼 수 있어요.'},
-    {target:'.main-nav .nav-settings',title:'도움말',body:'궁금한 게 생기면 환경설정 › 도움말을 열어 보세요. 이제 대장간 일을 직접 해 볼게요!'}
+    {title:'대장장이 라이프에 오신 걸 환영해요!',body:'모험가들에게 장비를 만들어 팔고, 그 장비로 강해진 모험가들과 함께 대장간을 키워 보세요.'},
+    {target:'.village-forge@bottom',title:'우리 대장간',body:'누르면 대장간 안으로 들어가요. 작업대에서 장비를 만들고, 진열하면 판매 직원이 모험가에게 팔아요.'},
+    {target:'.gold-pill',title:'골드',body:'가진 돈이에요. 장비가 팔릴 때마다 늘어나요.'},
+    {target:'.main-nav',title:'메뉴',body:'다른 메뉴는 처음 열 때 짧게 알려 드릴게요. 먼저 첫 장비를 만들어 봐요!'}
   ];
   // Korean particle after a name: 을/를, 이/가 chosen by whether the last syllable ends in a consonant.
   const josa=(word,withFinal,without)=>{const w=String(word||''),c=w.charCodeAt(w.length-1);return w+((c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?withFinal:without);};
@@ -1412,49 +1413,57 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     const ready=Sim.getUnlockedRecipes(state).filter(r=>!r.bossRecipe&&!r.unlockDrop).sort((a,b)=>Sim.getRecipeLevel(a)-Sim.getRecipeLevel(b)||a.name.localeCompare(b.name));
     return ready.find(r=>Object.entries(r.cost).every(([k,n])=>(state.materials[k]||0)>=n*3))||ready[0]||null;
   }
+  // 2026-11-14: one short hands-on mission (request → make → hand over → the hero gets stronger), skippable.
+  const missionHero=()=>state.adventurers.find(a=>a.id===mission.heroId)||null;
   const MISSION_STEPS=[
-    // ── 제작 의뢰 ──
-    {group:'제작 의뢰',title:'손님이 부탁하러 왔어요!',body:()=>(mission.hero||'모험가')+'님이 '+josa((recipe(mission.recipeId)?.name||'장비'),'을','를')+' 만들어 달라고 부탁했어요. 의뢰는 의뢰소에서 받아요. 같이 처리해 볼게요.',
-      before:()=>{if(ui.modal)closeModal();if(ui.view!=='shop')setView('shop');if(!mission.orderId){const made=Sim.createTutorialOrder(state);if(made.ok){mission.orderId=made.order.id;mission.recipeId=made.recipe.id;mission.hero=made.adventurer.name;invalidate();render(true);}}}},
-    {group:'제작 의뢰',target:'.main-nav [data-tab="quests"]',title:'의뢰소 열기',body:'오른쪽 아래 빛나는 [의뢰] 버튼을 눌러 보세요.',done:()=>ui.modal==='quests',before:()=>{ui.questTab='materials';},ensure:()=>{if(ui.modal&&ui.modal!=='quests')closeModal();}},
-    {group:'제작 의뢰',target:'#quest-tab-content',title:'재료 의뢰',body:'여기는 재료 의뢰예요. 부족한 재료를 골라 의뢰를 걸면 모험가들이 사냥하면서 모아다 줘요. 지금은 넘어갈게요.',
-      ensure:()=>{openWindow('quests',()=>{ui.questTab='materials';});if(ui.questTab!=='materials'){ui.questTab='materials';renderModal(true);}}},
-    {group:'제작 의뢰',target:'[data-action="quest-tab"][data-tab="orders"]',title:'제작 의뢰 탭',body:'[제작 의뢰] 탭을 눌러 보세요. 모험가가 부탁한 장비가 여기 모여요.',done:()=>ui.modal==='quests'&&ui.questTab==='orders',
-      ensure:()=>openWindow('quests',()=>{ui.questTab='materials';})},
-    {group:'제작 의뢰',target:()=>'[data-action="select-order"][data-id="'+mission.orderId+'"]',title:()=>(mission.hero||'모험가')+'의 부탁',body:()=>(mission.hero||'모험가')+'님의 의뢰를 눌러 보세요.',done:()=>ui.modal==='quests'&&ui.selectedOrder===mission.orderId,
-      ensure:()=>{openWindow('quests',()=>{ui.questTab='orders';});if(ui.questTab!=='orders'){ui.questTab='orders';renderModal(true);}}},
-    {group:'제작 의뢰',target:'.order-selection',title:'맞는 장비가 없어요',body:'창고와 진열대에 이 장비가 없으니 새로 만들어야 해요. 원래는 재료가 필요하지만, 처음이니까 재료는 제가 챙겨 드릴게요!',
-      ensure:()=>{openWindow('quests',()=>{ui.questTab='orders';});if(ui.questTab!=='orders'||ui.selectedOrder!==mission.orderId){ui.questTab='orders';ui.selectedOrder=mission.orderId;ui.modalSignature='';renderModal(true);}},
+    {group:'첫 장비',title:'손님이 부탁하러 왔어요!',body:()=>(mission.hero||'모험가')+'님이 '+josa((recipe(mission.recipeId)?.name||'장비'),'을','를')+' 만들어 달라고 부탁했어요. 같이 만들어 볼게요.',
+      before:()=>{if(ui.modal)closeModal();if(ui.view!=='shop')setView('shop');if(!mission.orderId){const made=Sim.createTutorialOrder(state);if(made.ok){mission.orderId=made.order.id;mission.recipeId=made.recipe.id;mission.hero=made.adventurer.name;mission.heroId=made.adventurer.id;mission.powerBefore=Math.round(Sim.getPower(made.adventurer));invalidate();render(true);}}}},
+    {group:'첫 장비',target:'.main-nav [data-tab="quests"]',title:'의뢰소 열기',body:'오른쪽 아래 빛나는 [의뢰] 버튼을 눌러 보세요.',done:()=>ui.modal==='quests',ensure:()=>{if(ui.modal&&ui.modal!=='quests')closeModal();}},
+    {group:'첫 장비',target:()=>'[data-action="select-order"][data-id="'+mission.orderId+'"]',title:()=>(mission.hero||'모험가')+'의 부탁',body:()=>(mission.hero||'모험가')+'님의 의뢰를 눌러 보세요.',done:()=>ui.modal==='quests'&&ui.selectedOrder===mission.orderId,
+      ensure:()=>{openWindow('quests',()=>{ui.questTab='orders';});if(ui.questTab!=='orders'){ui.questTab='orders';renderModal(true);}},
       after:()=>{const r=recipe(mission.recipeId);if(r){const need={};for(const [k,n] of Object.entries(r.cost)){const lack=n-(state.materials[k]||0);if(lack>0)need[k]=lack;}if(Object.keys(need).length)Sim.grantTutorialSupplies(state,{materials:need});ui.modalSignature='';renderModal(true);}}},
-    {group:'제작 의뢰',target:()=>'[data-action="order-make"][data-id="'+mission.orderId+'"]',title:'만들기',body:'재료를 넣어 뒀어요. [새로 제작해서 즉시 납품하기]를 눌러 보세요.',
+    {group:'첫 장비',target:()=>'[data-action="order-make"][data-id="'+mission.orderId+'"]',title:'만들기',body:'처음이라 재료는 넣어 뒀어요. [새로 제작해서 즉시 납품하기]를 눌러 보세요.',
       done:()=>{const o=missionOrder();return !o||o.status!=='open'||!!o.reservedItemId||Object.values(state.towns).some(t=>t.queue.some(q=>q.orderId===mission.orderId));},
       ensure:()=>{openWindow('quests',()=>{ui.questTab='orders';});if(ui.questTab!=='orders'||ui.selectedOrder!==mission.orderId){ui.questTab='orders';ui.selectedOrder=mission.orderId;ui.modalSignature='';renderModal(true);}}},
     // Watch it being made: the workshop room (where the furnaces are), with the workbench panel out of the way.
-    {group:'제작 의뢰',watch:true,title:'대장장이가 만드는 중',body:missionCraftText,before:()=>{if(ui.modal)closeModal();if(ui.view!=='shop')setView('shop');const panel=$('.work-panel');if(panel)panel.hidden=true;scene?.focusRoom?.('workshop');},
+    {group:'첫 장비',watch:true,title:'대장장이가 만드는 중',body:missionCraftText,before:()=>{if(ui.modal)closeModal();if(ui.view!=='shop')setView('shop');const panel=$('.work-panel');if(panel)panel.hidden=true;scene?.focusRoom?.('workshop');},
       ensure:()=>{if(ui.modal)closeModal();if(scene&&scene.view!=='world'&&scene.shopRoom!=='workshop')scene.focusRoom('workshop');},
       done:()=>{const o=missionOrder();return !o||o.status!=='open';}},
-    {group:'제작 의뢰',title:'전달 완료!',after:()=>{scene?.focusRoom?.('shop');},body:()=>{const o=missionOrder();return (mission.hero||'모험가')+'님이 '+josa((recipe(mission.recipeId)?.name||'장비'),'을','를')+' 받아 갔어요. 의뢰비 '+num(o?.payout||0)+' G를 받았어요! 제작 의뢰는 이렇게 받고, 만들고, 전달하면 돼요. 앞으로는 보스를 잡아 희귀 설계도를 얻은 모험가가 전용 장비를 이렇게 부탁하러 와요.';}},
-    // ── 자동 운영 ──
-    {group:'자동 운영',title:'매번 직접 만들 필요 없어요',body:'자동 운영에서 장비를 정해 두면, 직원들이 그 장비를 알아서 만들어 재고를 채워 둬요. 하나 정해 볼게요.'},
-    {group:'자동 운영',target:'.main-nav [data-tab="operations"]',title:'자동 운영 열기',body:'오른쪽 아래 빛나는 [자동 운영] 버튼을 눌러 보세요.',done:()=>ui.modal==='operations',ensure:()=>{if(ui.modal&&ui.modal!=='operations')closeModal();}},
-    {group:'자동 운영',target:'[data-action="operations-tab"][data-tab="production"]',title:'자동 제작 탭',body:'[자동 제작] 탭을 눌러 보세요.',done:()=>ui.modal==='operations'&&ui.operationsTab==='production',ensure:()=>openWindow('operations')},
-    {group:'자동 운영',target:()=>'.ops-recipe .or-add[data-id="'+(mission.autoId||'')+'"]',title:()=>(recipe(mission.autoId)?.name||'장비')+' 추가',body:()=>'창고에 재료가 있는 '+(recipe(mission.autoId)?.name||'장비')+' 옆 [추가]를 눌러 보세요.',
-      done:()=>Object.hasOwn(tutorialTown()?.operations?.craftRules||{},mission.autoId),
-      before:()=>{const r=missionAutoRecipe();mission.autoId=r?.id||null;if(r&&!Object.entries(r.cost).every(([k,n])=>(state.materials[k]||0)>=n*3)){const need={};for(const [k,n] of Object.entries(r.cost))need[k]=Math.max(0,n*3-(state.materials[k]||0));Sim.grantTutorialSupplies(state,{materials:need});}const f=ui.autoFilter||(ui.autoFilter={});f.slot='all';f.ready=true;f.band='all';},
-      ensure:()=>{openWindow('operations',()=>{ui.operationsTab='production';});if(ui.operationsTab!=='production'){ui.operationsTab='production';renderOperations(true);}}},
-    {group:'자동 운영',target:'.operation-plan',title:'사용 켜고 저장',body:'[사용]에 체크하고 [저장]을 눌러 보세요. 재고 수만큼 늘 채워 둬요.',done:()=>!!tutorialTown()?.operations?.craftRules?.[mission.autoId]?.enabled,
-      ensure:()=>{openWindow('operations',()=>{ui.operationsTab='production';});if(ui.operationsTab!=='production'){ui.operationsTab='production';renderOperations(true);}}},
-    {group:'자동 운영',title:'자동 제작 시작!',body:()=>'지금부터 직원들이 '+josa((recipe(mission.autoId)?.name||'이 장비'),'을','를')+' '+(tutorialTown()?.operations?.craftRules?.[mission.autoId]?.targetStock||3)+'개까지 알아서 만들어 두고, 팔리면 다시 채워요. 재료가 떨어지지 않게 [재료 매입] 탭에서 자동 매입도 켤 수 있어요.',before:()=>{if(ui.modal)closeModal();}},
-    // ── 직원 고용 ──
-    {group:'직원 고용',title:'일손을 늘려요',body:'직원이 많을수록 더 많이 만들고 더 많이 팔 수 있어요. 직원을 한 명 뽑아 볼게요.'},
-    {group:'직원 고용',target:'.main-nav [data-tab="characters"]',title:'캐릭터 열기',body:'오른쪽 아래 빛나는 [캐릭터] 버튼을 눌러 보세요. 모험가와 직원을 볼 수 있어요.',done:()=>['adventurers','staff'].includes(ui.modal),ensure:()=>{if(ui.modal&&!['adventurers','staff'].includes(ui.modal))closeModal();}},
-    {group:'직원 고용',target:'[data-action="modal-switch"][data-id="staff"]',title:'직원 탭',body:'[직원] 탭을 눌러 보세요.',done:()=>ui.modal==='staff',before:()=>{mission.staff=tutorialTown()?.staff.length||0;},ensure:()=>{if(!['adventurers','staff'].includes(ui.modal))showModal('adventurers');}},
-    {group:'직원 고용',target:'[data-action="hire-candidate"]:not([disabled])',title:'지원자 고용',body:'지원자 목록이에요. 빛나는 [고용] 버튼을 눌러 이 지원자를 뽑아 보세요. 처음이니 고용비가 모자라면 제가 보태 드릴게요!',
-      done:()=>(tutorialTown()?.staff.length||0)>mission.staff||(mission.waited>8&&!document.querySelector('[data-action="hire-candidate"]')),
-      before:()=>{mission.waited=0;},
-      ensure:()=>{openWindow('staff');mission.waited=(mission.waited||0)+1;const costs=[...document.querySelectorAll('[data-action="hire-candidate"]')].map(b=>Number((b.textContent.match(/[\d,]+/)||['0'])[0].replace(/,/g,''))).filter(n=>n>0);const need=costs.length?Math.min(...costs)-state.gold:0;if(need>0){Sim.grantTutorialSupplies(state,{gold:need});ui.modalSignature='';renderModal(true);}}},
-    {group:'직원 고용',title:'준비 끝!',body:'새 직원은 매달 1일에 월급을 받아요. 골드를 넉넉히 두세요. 이제부터 왼쪽 달력 아래에 [퀘스트]가 생기고, 가끔 [돌발] 사건도 일어나요. 눌러서 확인해 보세요. 마음껏 대장간을 키워 보세요!',before:()=>{if(ui.modal)closeModal();}}
+    {group:'첫 장비',title:'더 강해졌어요!',after:()=>{scene?.focusRoom?.('shop');},body:()=>{const o=missionOrder(),h=missionHero(),after=h?Math.round(Sim.getPower(h)):0,name=mission.hero||'모험가';
+      return name+'님이 '+josa((recipe(mission.recipeId)?.name||'장비'),'을','를')+' 받아 바로 착용했어요. 전투력 '+num(mission.powerBefore||0)+' → '+num(Math.max(after,mission.powerBefore||0))+', 의뢰비 '+num(o?.payout||0)+' G를 받았어요! 이제 '+name+'님은 더 깊은 사냥터로 떠나 전리품을 가져와요.';}},
+    {group:'첫 장비',target:'.work-panel',title:'이제 자유롭게!',body:'작업대에서 장비를 만들어 진열하면 모험가들이 사 가요. 다른 메뉴는 처음 열 때 짧게 알려 드릴게요. 마음껏 대장간을 키워 보세요!',before:()=>{if(ui.modal)closeModal();const panel=$('.work-panel');if(panel&&ui.view==='shop')panel.hidden=false;}}
   ];
+  // One card the first time each menu is opened (after the hands-on mission). Shown once per browser.
+  const FIRST_TIPS={
+    operations:{title:'자동 운영',body:'만들 장비와 재고 수를 정해 두면 직원들이 알아서 만들고, 재료 매입과 진열도 맡길 수 있어요.'},
+    adventurers:{title:'캐릭터',body:'모험가와 직원을 볼 수 있어요. [직원] 탭에서 지원자를 고용하면 더 많이 만들고 팔 수 있어요. 직원은 매달 1일에 월급을 받아요.'},
+    staff:{title:'직원',body:'지원자를 고용하면 더 많이 만들고 팔 수 있어요. 직원은 매달 1일에 월급을 받으니 골드를 넉넉히 두세요.'},
+    quests:{title:'의뢰소',body:'재료 의뢰를 걸면 모험가들이 사냥하며 모아다 줘요. 보스를 잡은 모험가는 전용 장비를 부탁하러 와요.'},
+    upgrades:{title:'시설 배치',body:'화덕·진열대 같은 시설을 놓고 대장간과 여관을 넓힐 수 있어요. 시설이 많을수록 더 많이 만들고 팔아요.'},
+    research:{title:'연구',body:'골드를 들여 판매가, 제작 속도 같은 대장간 능력을 영구히 올려요.'},
+    achievements:{title:'업적',body:'목표를 달성하면 보상을 받아요.'},
+    world:{title:'월드맵',body:'모험가들이 사냥하는 곳과 다른 마을이 있어요. 보스 표식을 누르면 토벌 파티를 보낼 수 있고, 조건을 채우면 다른 마을에 지점을 열 수 있어요.'}
+  };
+  // 2026-11-14 (first-hour check): a shop with no buyer runs out of materials and stalls while wages go on.
+  // Once, when nothing can be made any more, say how to get materials.
+  setInterval(()=>{
+    try{
+      if(!preferences.missionsDone||preferences.tipsSeen?.materials||tutorialStep>=0||ui.paused||!state)return;
+      const town=getTown();if(!town||town.staff.some(w=>w.role==='buyer'))return;
+      const list=Sim.getUnlockedRecipes(state).filter(r=>!r.bossRecipe&&!r.unlockDrop);
+      if(!list.length||list.some(r=>Object.entries(r.cost).every(([k,n])=>(state.materials[k]||0)>=n)))return;
+      if(town.queue.length)return;
+      FIRST_TIPS.materials={title:'재료가 떨어졌어요',body:'캐릭터 › 직원에서 직원을 고용해 [재료 매입] 담당으로 정하면 모험가에게서 재료를 사 와요. 의뢰소에서 재료 의뢰를 걸어도 돼요.'};
+      showFirstTip('materials');
+    }catch(_){}
+  },5000);
+  function showFirstTip(key){
+    if(!preferences.missionsDone||tutorialStep>=0||saveBlocked)return;
+    const tip=FIRST_TIPS[key];if(!tip)return;
+    const seen=preferences.tipsSeen||(preferences.tipsSeen={});if(seen[key])return;
+    seen[key]=true;if(key==='adventurers'||key==='staff')seen.adventurers=seen.staff=true;savePreferences();
+    setTimeout(()=>{if(tutorialStep<0)runGuide([{title:tip.title,body:tip.body}],{pause:false});},250);
+  }
   let tutorialSteps=null,tutorialStep=-1,tutorialPaused=false,tutorialWasPaused=false,tutorialOnEnd=null,tutorialPoll=0,tutorialRect='',tutorialForced=false;
   function runGuide(steps,{pause,forced,onEnd}){
     if(!$('#canvas-wrap'))return;
@@ -1464,7 +1473,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     enterTutorialStep();
   }
   function startTutorial(){if(ui.modal)closeModal();runGuide(TOUR_STEPS,{pause:true,onEnd:()=>{if(!preferences.missionsDone)setTimeout(startMissions,300);}});}
-  function startMissions(){for(const k of Object.keys(mission))delete mission[k];runGuide(MISSION_STEPS,{pause:false,forced:true,onEnd:()=>{preferences.missionsDone=true;savePreferences();syncIncidents();}});}
+  function startMissions(){for(const k of Object.keys(mission))delete mission[k];runGuide(MISSION_STEPS,{pause:false,forced:false,onEnd:()=>{preferences.missionsDone=true;savePreferences();syncIncidents();}});}
   // Sudden incidents start once the hands-on tutorial is over (the first one comes 3 game days later).
   function syncIncidents(){
     if(!preferences.missionsDone)return;
@@ -1513,8 +1522,9 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     // Counter per mission ("제작 의뢰 · 3 / 9"), or for the whole tour.
     const same=step.group?tutorialSteps.filter(s=>s.group===step.group):tutorialSteps,count=(step.group?step.group+' · ':'')+(same.indexOf(step)+1)+' / '+same.length;
     const waiting=!!step.done,last=tutorialStep===tutorialSteps.length-1;
-    const actions=(tutorialForced?'':'<button type="button" class="text-button" data-tut="skip">건너뛰기</button>')+(step.watch?'<span class="tut-wait">'+icon('clock')+' 잠시 지켜봐 주세요</span>':waiting?'<span class="tut-wait">'+icon('arrow')+' 빛나는 곳을 눌러 보세요</span>':'<button type="button" class="primary-button" data-tut="next">'+(last?'시작하기':'다음')+'</button>');
-    el.innerHTML=(step.watch?'<div class="tut-block"></div>':'<div class="tut-dim"></div>')+(r?'<div class="tut-hole'+(waiting?' pulse':'')+'"></div>':'')+'<div class="tut-card'+(step.watch?' top':r?'':' center')+'"><small>'+escape(count)+'</small><h3>'+escape(title)+'</h3><p>'+escape(body)+'</p><div class="tut-actions'+(tutorialForced?' forced':'')+'">'+actions+'</div></div>';
+    const single=tutorialSteps.length===1;
+    const actions=(tutorialForced||single?'':'<button type="button" class="text-button" data-tut="skip">건너뛰기</button>')+(step.watch?'<span class="tut-wait">'+icon('clock')+' 잠시 지켜봐 주세요</span>':waiting?'<span class="tut-wait">'+icon('arrow')+' 빛나는 곳을 눌러 보세요</span>':'<button type="button" class="primary-button" data-tut="next">'+(single?'확인':last?'시작하기':'다음')+'</button>');
+    el.innerHTML=(step.watch?'<div class="tut-block"></div>':'<div class="tut-dim"></div>')+(r?'<div class="tut-hole'+(waiting?' pulse':'')+'"></div>':'')+'<div class="tut-card'+(step.watch?' top':r?'':' center')+'">'+(single?'':'<small>'+escape(count)+'</small>')+'<h3>'+escape(title)+'</h3><p>'+escape(body)+'</p><div class="tut-actions'+(tutorialForced?' forced':'')+'">'+actions+'</div></div>';
     const card=el.querySelector('.tut-card');
     if(r){
       Object.assign(el.querySelector('.tut-hole').style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});
@@ -1618,7 +1628,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
   // ---- 돌발 사건 (2026-11-09): cards under the calendar, a window in the middle of the screen ----
   const INCIDENT_CAT_ICON={손님:'people',사고:'flame',직원:'hammer',모험가:'sword',마을:'shop',시세:'coin',날씨:'sun',특별:'star'};
   // Written out one by one so the one-file build (scripts/package-game.cjs) can embed each picture.
-  const INCIDENT_ART={E01:'assets/events/E01.jpg',E02:'assets/events/E02.jpg',E03:'assets/events/E03.jpg',E04:'assets/events/E04.jpg',E05:'assets/events/E05.jpg',E06:'assets/events/E06.jpg',E07:'assets/events/E07.jpg',E08:'assets/events/E08.jpg',E09:'assets/events/E09.jpg',E10:'assets/events/E10.jpg',
+  const INCIDENT_ART={E00:'assets/events/E02.jpg',E01:'assets/events/E01.jpg',E02:'assets/events/E02.jpg',E03:'assets/events/E03.jpg',E04:'assets/events/E04.jpg',E05:'assets/events/E05.jpg',E06:'assets/events/E06.jpg',E07:'assets/events/E07.jpg',E08:'assets/events/E08.jpg',E09:'assets/events/E09.jpg',E10:'assets/events/E10.jpg',
     E11:'assets/events/E11.jpg',E12:'assets/events/E12.jpg',E13:'assets/events/E13.jpg',E14:'assets/events/E14.jpg',E15:'assets/events/E15.jpg',E16:'assets/events/E16.jpg',E17:'assets/events/E17.jpg',E18:'assets/events/E18.jpg',E19:'assets/events/E19.jpg',E20:'assets/events/E20.jpg',
     E21:'assets/events/E21.jpg',E22:'assets/events/E22.jpg',E23:'assets/events/E23.jpg',E24:'assets/events/E24.jpg',E25:'assets/events/E25.jpg',E26:'assets/events/E26.jpg',E27:'assets/events/E27.jpg',E28:'assets/events/E28.jpg',E29:'assets/events/E29.jpg',E30:'assets/events/E30.jpg',
     E31:'assets/events/E31.jpg',E32:'assets/events/E32.jpg',E33:'assets/events/E33.jpg',E34:'assets/events/E34.jpg',E35:'assets/events/E35.jpg',E36:'assets/events/E36.jpg',E37:'assets/events/E37.jpg',E38:'assets/events/E38.jpg',E39:'assets/events/E39.jpg',E40:'assets/events/E40.jpg',E41:'assets/events/E41.jpg',E42:'assets/events/E42.jpg',E43:'assets/events/E43.jpg',E44:'assets/events/E44.jpg',E45:'assets/events/E45.jpg',E46:'assets/events/E46.jpg',E47:'assets/events/E47.jpg',E48:'assets/events/E48.jpg',E49:'assets/events/E49.jpg',E50:'assets/events/E50.jpg',E51:'assets/events/E51.jpg',E52:'assets/events/E52.jpg',E53:'assets/events/E53.jpg',E54:'assets/events/E54.jpg',E55:'assets/events/E55.jpg',E56:'assets/events/E56.jpg',E57:'assets/events/E57.jpg',E58:'assets/events/E58.jpg',E59:'assets/events/E59.jpg'};
@@ -1708,7 +1718,7 @@ $('#village-inn-label').textContent='여관 Lv.'+innLevel;
     const r=region(ui.modalData);if(!r){$('#modal-body').innerHTML=empty('이 사냥터를 찾지 못했어요','월드맵에서 다시 선택해 주세요.','map');return;}
     const town=townCatalog().find(t=>t.id===r.townId),locals=townHeroes(r.townId),hunting=locals.filter(a=>a.regionId===r.id&&['hunting','raiding'].includes(a.status)),eligible=locals.filter(a=>Sim.getPower(a)>=r.minPower),sig=[r.id,hunting.length,eligible.length].join(':');if(!force&&ui.modalSignature===sig)return;ui.modalSignature=sig;
     $('#modal-title').textContent=r.name;
-    $('#modal-body').innerHTML='<div class="region-detail-banner">'+icon(r.biome?.includes('mountain')?'mountain':'map')+'<div><small>'+escape(town?.name||'먼 지역')+'의 사냥터</small><h3>권장 Lv. '+(r.recommendedLevel||1)+'</h3></div></div><p class="modal-description">'+escape(r.description||'모험가가 자신의 장비와 전투력에 맞춰 찾아가는 사냥터입니다.')+'</p><div class="metrics-grid three-columns">'+metric('필요 전투력',num(r.minPower),'','sword')+metric('현재 사냥 중',hunting.length,'명')+metric('마을의 도전 가능 인원',eligible.length,'명')+'</div><h3 class="modal-section-title">'+icon('box')+' 이곳에서 얻는 재료</h3><div class="region-loot">'+Object.keys(r.loot||{}).map(id=>'<span>'+materialArt(id)+escape(DATA.materials[id]?.name||id)+'</span>').join('')+'</div><button class="secondary-button full-button" data-action="focus-town" data-id="'+escape(r.townId)+'">'+icon('map')+' '+escape(town?.name||'마을')+' 주변 살펴보기</button>';
+    $('#modal-body').innerHTML='<div class="region-detail-banner">'+icon(r.biome?.includes('mountain')?'mountain':'map')+'<div><small>'+escape(town?.name||'먼 지역')+'의 사냥터</small><h3>권장 Lv. '+(r.recommendedLevel||1)+'</h3></div></div><p class="modal-description">'+escape(r.description||'모험가가 자신의 장비와 전투력에 맞춰 찾아가는 사냥터입니다.')+'</p>'+(r.traitName?'<p class="boss-weak">'+icon('star')+' <b>'+escape(r.traitName)+'</b> <span>'+escape(r.traitText||'')+'</span></p>':'')+'<div class="metrics-grid three-columns">'+metric('필요 전투력',num(r.minPower),'','sword')+metric('현재 사냥 중',hunting.length,'명')+metric('마을의 도전 가능 인원',eligible.length,'명')+'</div><h3 class="modal-section-title">'+icon('box')+' 이곳에서 얻는 재료</h3><div class="region-loot">'+Object.keys(r.loot||{}).map(id=>'<span>'+materialArt(id)+escape(DATA.materials[id]?.name||id)+'</span>').join('')+'</div><button class="secondary-button full-button" data-action="focus-town" data-id="'+escape(r.townId)+'">'+icon('map')+' '+escape(town?.name||'마을')+' 주변 살펴보기</button>';
   }
   function renderModal(force=false) {
     if(!ui.modal)return;

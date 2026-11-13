@@ -1,0 +1,46 @@
+// 2026-11-14: shorter tutorial, first-open tips, power change, region traits, first order choice, boss tactics.
+// Row: [Korean, English, Japanese, Simplified Chinese, Traditional Chinese].
+(function(){
+  const api=typeof window!=='undefined'&&window.LittleEmberI18n;if(!api)return;
+  api.rows([
+  ['모험가들에게 장비를 만들어 팔고, 그 장비로 강해진 모험가들과 함께 대장간을 키워 보세요.','Make and sell gear to adventurers, and grow your forge alongside the heroes your gear makes stronger.','冒険者に装備を作って売り、その装備で強くなった冒険者たちと一緒に鍛冶屋を育てましょう。','为冒险者打造并出售装备，与因你的装备而变强的冒险者一起壮大铁匠铺吧。','為冒險者打造並出售裝備，與因你的裝備而變強的冒險者一起壯大鐵匠鋪吧。'],
+  ['누르면 대장간 안으로 들어가요. 작업대에서 장비를 만들고, 진열하면 판매 직원이 모험가에게 팔아요.','Tap to go inside. Make gear at the workbench and display it—clerks sell it to adventurers.','押すと鍛冶屋の中に入ります。作業台で装備を作り、陳列すると販売担当が冒険者に売ります。','点击即可进入铁匠铺。在工作台打造装备，陈列后销售员工会卖给冒险者。','點擊即可進入鐵匠鋪。在工作台打造裝備，陳列後銷售員工會賣給冒險者。'],
+  ['가진 돈이에요. 장비가 팔릴 때마다 늘어나요.','Your money. It grows every time gear sells.','所持金です。装備が売れるたびに増えます。','你的金币。每卖出一件装备就会增加。','你的金幣。每賣出一件裝備就會增加。'],
+  ['다른 메뉴는 처음 열 때 짧게 알려 드릴게요. 먼저 첫 장비를 만들어 봐요!','I\'ll briefly explain each other menu the first time you open it. Let\'s make your first gear!','他のメニューは初めて開いたときに短く説明します。まずは最初の装備を作りましょう!','其他菜单会在第一次打开时简单说明。先来打造第一件装备吧！','其他選單會在第一次打開時簡單說明。先來打造第一件裝備吧！'],
+  ['첫 장비','First gear','最初の装備','第一件装备','第一件裝備'],
+  ['{0}님이 {1} 만들어 달라고 부탁했어요. 같이 만들어 볼게요.','{0} asked you to make {1}. Let\'s make it together.','{0}さんが{1}を作ってほしいと頼みました。一緒に作ってみましょう。','{0}委托你制作{1}。一起来做吧。','{0}委託你製作{1}。一起來做吧。'],
+  ['처음이라 재료는 넣어 뒀어요. [새로 제작해서 즉시 납품하기]를 눌러 보세요.','It\'s your first time, so I added the materials. Press [Craft new and deliver now].','初めてなので素材は入れておきました。[新しく製作してすぐ納品する]を押してください。','第一次就先帮你放好材料了。请点击[新制作并立即交付]。','第一次就先幫你放好材料了。請點擊[新製作並立即交付]。'],
+  ['더 강해졌어요!','Stronger now!','強くなりました!','变得更强了！','變得更強了！'],
+  ['{0}님이 {1} 받아 바로 착용했어요. 전투력 {2} → {3}, 의뢰비 {4} G를 받았어요! 이제 {5}님은 더 깊은 사냥터로 떠나 전리품을 가져와요.','{0} took {1} and put it on right away. Power {2} → {3}, and you earned a {4} G fee! Now {5} can head to deeper hunting grounds and bring back loot.','{0}さんが{1}を受け取ってすぐ装備しました。戦闘力 {2} → {3}、依頼料 {4} Gを受け取りました!これで{5}さんはより深い狩り場へ出かけ、戦利品を持ち帰ります。','{0}收下{1}并立刻装备上了。战力 {2} → {3}，获得委托费 {4} G！现在{5}可以前往更深的猎场带回战利品了。','{0}收下{1}並立刻裝備上了。戰力 {2} → {3}，獲得委託費 {4} G！現在{5}可以前往更深的獵場帶回戰利品了。'],
+  ['이제 자유롭게!','You\'re free now!','ここからは自由に!','接下来自由发挥吧！','接下來自由發揮吧！'],
+  ['작업대에서 장비를 만들어 진열하면 모험가들이 사 가요. 다른 메뉴는 처음 열 때 짧게 알려 드릴게요. 마음껏 대장간을 키워 보세요!','Make gear at the workbench and display it, and adventurers will buy it. Other menus are explained the first time you open them. Grow your forge as you like!','作業台で装備を作って陳列すると冒険者が買っていきます。他のメニューは初めて開いたときに短く説明します。思う存分鍛冶屋を育ててください!','在工作台打造装备并陈列，冒险者就会购买。其他菜单会在第一次打开时简单说明。尽情壮大铁匠铺吧！','在工作台打造裝備並陳列，冒險者就會購買。其他選單會在第一次打開時簡單說明。盡情壯大鐵匠鋪吧！'],
+  ['확인','OK','確認','确认','確認'],
+  ['만들 장비와 재고 수를 정해 두면 직원들이 알아서 만들고, 재료 매입과 진열도 맡길 수 있어요.','Set which gear to keep in stock and staff will make it on their own. You can also leave material buying and displays to them.','作る装備と在庫数を決めておくとスタッフが自動で作り、素材の買い付けや陳列も任せられます。','设定要做的装备与库存数量，员工就会自动制作，还能交给他们采购材料与陈列。','設定要做的裝備與庫存數量，員工就會自動製作，還能交給他們採購材料與陳列。'],
+  ['모험가와 직원을 볼 수 있어요. [직원] 탭에서 지원자를 고용하면 더 많이 만들고 팔 수 있어요. 직원은 매달 1일에 월급을 받아요.','See your adventurers and staff. Hire applicants in the [Staff] tab to make and sell more. Staff are paid on the 1st of each month.','冒険者とスタッフを見られます。[スタッフ]タブで志願者を雇うと、もっと作って売れます。スタッフは毎月1日に給料を受け取ります。','可以查看冒险者与员工。在[员工]页雇用应聘者就能做得更多、卖得更多。员工每月1日领工资。','可以查看冒險者與員工。在[員工]頁雇用應徵者就能做得更多、賣得更多。員工每月1日領薪水。'],
+  ['지원자를 고용하면 더 많이 만들고 팔 수 있어요. 직원은 매달 1일에 월급을 받으니 골드를 넉넉히 두세요.','Hiring applicants lets you make and sell more. Staff are paid on the 1st of each month, so keep enough gold.','志願者を雇うともっと作って売れます。スタッフは毎月1日に給料を受け取るので、ゴールドに余裕を持ちましょう。','雇用应聘者就能做得更多、卖得更多。员工每月1日领工资，请留足金币。','雇用應徵者就能做得更多、賣得更多。員工每月1日領薪水，請留足金幣。'],
+  ['재료 의뢰를 걸면 모험가들이 사냥하며 모아다 줘요. 보스를 잡은 모험가는 전용 장비를 부탁하러 와요.','Post material requests and adventurers gather them while hunting. Heroes who beat a boss come to ask for their own special gear.','素材依頼を出すと冒険者が狩りをしながら集めてきます。ボスを倒した冒険者は専用装備を頼みに来ます。','发布材料委托，冒险者会在狩猎时帮你收集。击败首领的冒险者会来委托专属装备。','發布材料委託，冒險者會在狩獵時幫你收集。擊敗首領的冒險者會來委託專屬裝備。'],
+  ['화덕·진열대 같은 시설을 놓고 대장간과 여관을 넓힐 수 있어요. 시설이 많을수록 더 많이 만들고 팔아요.','Place facilities like furnaces and displays, and expand the forge and inn. More facilities mean more making and selling.','炉や陳列台などの施設を置き、鍛冶屋と宿屋を広げられます。施設が多いほど多く作って売れます。','可以摆放火炉、陈列架等设施，并扩建铁匠铺与旅店。设施越多，做得越多、卖得越多。','可以擺放火爐、陳列架等設施，並擴建鐵匠鋪與旅店。設施越多，做得越多、賣得越多。'],
+  ['골드를 들여 판매가, 제작 속도 같은 대장간 능력을 영구히 올려요.','Spend gold to permanently raise forge abilities like sale price and crafting speed.','ゴールドを使って販売価格や製作速度など鍛冶屋の能力を永久に上げます。','花费金币永久提升售价、制作速度等铁匠铺能力。','花費金幣永久提升售價、製作速度等鐵匠鋪能力。'],
+  ['목표를 달성하면 보상을 받아요.','Reach goals to earn rewards.','目標を達成すると報酬がもらえます。','达成目标即可获得奖励。','達成目標即可獲得獎勵。'],
+  ['모험가들이 사냥하는 곳과 다른 마을이 있어요. 보스 표식을 누르면 토벌 파티를 보낼 수 있고, 조건을 채우면 다른 마을에 지점을 열 수 있어요.','Here are the hunting grounds and other towns. Tap a boss marker to send a hunting party, and meet the conditions to open a branch in another town.','冒険者が狩りをする場所と他の村があります。ボスの印を押すと討伐パーティーを送れ、条件を満たすと他の村に支店を開けます。','这里有冒险者狩猎的地方与其他村庄。点击首领标记可派出讨伐队，满足条件即可在其他村庄开设分店。','這裡有冒險者狩獵的地方與其他村莊。點擊首領標記可派出討伐隊，滿足條件即可在其他村莊開設分店。'],
+  ['재료가 떨어졌어요','Out of materials','素材が切れました','材料用完了','材料用完了'],
+  ['캐릭터 › 직원에서 직원을 고용해 [재료 매입] 담당으로 정하면 모험가에게서 재료를 사 와요. 의뢰소에서 재료 의뢰를 걸어도 돼요.','Hire someone under Characters › Staff and assign them to [Material buying]—they\'ll buy materials from adventurers. You can also post a material request at the request board.','キャラクター › スタッフで人を雇い[素材買い付け]担当にすると、冒険者から素材を買ってきます。依頼所で素材依頼を出してもかまいません。','在角色 › 员工中雇人并指派为[材料采购]，就会向冒险者收购材料。也可以在委托所发布材料委托。','在角色 › 員工中雇人並指派為[材料採購]，就會向冒險者收購材料。也可以在委託所發布材料委託。'],
+  ['예상 판매가 {0} G','Est. price {0} G','予想販売価格 {0} G','预计售价 {0} G','預計售價 {0} G'],
+  ['전투력 {0} → {1}','Power {0} → {1}','戦闘力 {0} → {1}','战力 {0} → {1}','戰力 {0} → {1}'],
+  ['풍요로운 땅','Bountiful land','豊かな土地','丰饶之地','豐饒之地'],['재료가 1.5배 나오지만 사냥이 25% 오래 걸려요.','1.5× materials, but hunts take 25% longer.','素材が1.5倍出ますが、狩りに25%長くかかります。','材料1.5倍，但狩猎时间延长25%。','材料1.5倍，但狩獵時間延長25%。'],
+  ['지름길','Shortcut','近道','捷径','捷徑'],['사냥이 30% 빨리 끝나지만 골드가 15% 적어요.','Hunts end 30% faster, but 15% less gold.','狩りが30%早く終わりますが、ゴールドが15%少なくなります。','狩猎快30%结束，但金币少15%。','狩獵快30%結束，但金幣少15%。'],
+  ['보물 사냥터','Treasure grounds','宝の狩り場','宝藏猎场','寶藏獵場'],['골드가 1.4배지만 경험치가 15% 적어요.','1.4× gold, but 15% less experience.','ゴールドが1.4倍ですが、経験値が15%少なくなります。','金币1.4倍，但经验少15%。','金幣1.4倍，但經驗少15%。'],
+  ['수련장','Training grounds','修練場','修炼场','修煉場'],['경험치가 1.5배지만 재료가 20% 적어요.','1.5× experience, but 20% fewer materials.','経験値が1.5倍ですが、素材が20%少なくなります。','经验1.5倍，但材料少20%。','經驗1.5倍，但材料少20%。'],
+  ['{0} · {1} 완성 · {2} · 예상 판매가 {3} G','{0} · {1} done · {2} · Est. price {3} G','{0} · {1} 完成 · {2} · 予想販売価格 {3} G','{0} · {1} 完成 · {2} · 预计售价 {3} G','{0} · {1} 完成 · {2} · 預計售價 {3} G'],
+  ['첫 대량 주문','First bulk order','初めての大口注文','第一笔大订单','第一筆大訂單'],
+  ['마을 경비대장이 찾아왔어요. "경비대 장비를 맡기고 싶은데, 어느 쪽으로 해 주시겠소?"','The town guard captain is here. "I\'d like you to equip the guard. Which way will you take it?"','村の警備隊長が訪ねてきました。「警備隊の装備を任せたいのだが、どちらで頼めるかな?」','村庄卫队长来了。“想把卫队装备交给你，你打算怎么做？”','村莊衛隊長來了。「想把衛隊裝備交給你，你打算怎麼做？」'],
+  ['많이, 빨리','Many, fast','たくさん、早く','多而快','多而快'],['하나라도 좋게','One, but good','一つでも良い物を','少而精','少而精'],
+  ['3일 안에 무기 4개 · +{0} G','4 weapons within 3 days · +{0} G','3日以内に武器4個 · +{0} G','3天内交4件武器 · +{0} G','3天內交4件武器 · +{0} G'],
+  ['6일 안에 우수 이상 무기 1개 · +{0} G · 명성 +6','1 Fine+ weapon within 6 days · +{0} G · Fame +6','6日以内に優秀以上の武器1個 · +{0} G · 名声 +6','6天内交1件优秀以上武器 · +{0} G · 名声 +6','6天內交1件優秀以上武器 · +{0} G · 名聲 +6'],
+  ['경비대장이 다른 대장간으로 갔어요. 명성 −1.','The guard captain went to another forge. Fame −1.','警備隊長は別の鍛冶屋へ行きました。名声 −1。','卫队长去了别家铁匠铺。名声 −1。','衛隊長去了別家鐵匠鋪。名聲 −1。'],
+  ['공략','Tactic','攻略','攻略','攻略'],
+  ['회복이 중요해요 — 성직자가 있으면 성공률 +16%p','Healing matters — a cleric adds +16%p success','回復が重要です — 聖職者がいると成功率 +16%p','治疗很重要 — 有圣职者成功率 +16%p','治療很重要 — 有聖職者成功率 +16%p'],
+  ['힘으로 밀어붙여요 — 전투력이 높을수록 성공률이 크게 올라요','Brute force — higher power raises success a lot','力で押し切ります — 戦闘力が高いほど成功率が大きく上がります','以力取胜 — 战力越高成功率提升越多','以力取勝 — 戰力越高成功率提升越多'],
+  ['여러 직업이 필요해요 — 직업 3가지 이상이면 성공률 +12%p','Needs many jobs — 3+ different jobs add +12%p success','多くの職業が必要です — 職業3種類以上で成功率 +12%p','需要多种职业 — 3种以上职业成功率 +12%p','需要多種職業 — 3種以上職業成功率 +12%p']
+  ]);
+})();
